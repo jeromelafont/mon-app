@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 // ===================================================================================
 // DÉFINITION DE TOUS LES SOUS-COMPOSANTS
@@ -98,7 +98,7 @@ const BenefitsSection = () => (
                 <svg className="list-icon purple-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path></svg>
                 <div>
                     <strong className="list-item-strong">Client Retention & Brand Integrity:</strong>
-                    We ensure your customers remain loyal to *your* brand by preventing them from turning to competitors, acting as a direct protection of your customer lifetime value.
+                    We ensure your customers remain loyal to *your* brand by preventing them from turning to competitors. This proactive management provides <strong>true peace of mind</strong> for your clients and builds a reputation for absolute reliability—a <strong>decisive competitive advantage</strong>.
                 </div>
             </li>
             <li>
@@ -184,34 +184,34 @@ const PricingSection = () => (
     <section className="content-section animate-fade-in">
         <h2 className="section-heading pricing-heading">
             <svg className="section-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
-            Our Pricing Model: Fixed + Incentive
+            Our Pricing Model: Aligned with Your Success
         </h2>
         <p className="section-text">
-            We've designed a model that combines the predictability of a subscription with a performance-based incentive aligned with the value we preserve.
+            Our model is simple, transparent, and perfectly aligned with your goals. It combines a predictable platform fee with a performance-based incentive.
         </p>
         <div className="card-container">
             <div className="info-card blue-card">
-                <h3 className="card-title">Access & Maintenance Fee</h3>
+                <h3 className="card-title">Platform & Support Fee</h3>
                 <p className="card-text">
-                    This fee covers integration, platform access, and dedicated support, ensuring our team is ready to act for you.
+                    This fixed monthly fee covers integration, platform access, and our dedicated support team, ensuring we are always ready to act on your behalf.
                 </p>
                 <p className="card-price">
-                    <span className="card-price-value">€2,000 - €10,000+</span> / month
+                    <span className="card-price-value">€3,000</span> / month
                 </p>
                 <p className="card-note">
-                    (Adjusted based on complexity, data volume, and SLA.)
+                    (Illustrative fixed fee)
                 </p>
             </div>
             <div className="info-card green-card">
-                <h3 className="card-title">Incentive on Managed Revenue</h3>
+                <h3 className="card-title">Success & Logistics Fee</h3>
                 <p className="card-text">
-                    An incentive applied as a percentage of the Ex-Tax Revenue of each stock-out transaction we successfully fulfill via our network.
+                    A single, all-inclusive commission on the ex-tax revenue of each stock-out we successfully resolve. This unique rate <strong>covers all associated logistics and shipping costs</strong> for moving parts within our network. You pay only for results.
                 </p>
                 <p className="card-price">
-                    <span className="card-price-value">3% to 7%</span> per transaction
+                    <span className="card-price-value">3%</span> per managed transaction
                 </p>
                 <p className="card-note">
-                    (This aligns our interests: we are rewarded on the value we help you secure.)
+                    (Performance-based, all-inclusive rate)
                 </p>
             </div>
         </div>
@@ -223,54 +223,53 @@ const RoiSection = () => (
     <section className="content-section animate-fade-in">
         <h2 className="section-heading benefits-heading">
             <svg className="section-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
-            Return on Investment (ROI)
+            ROI: Your Strategic Insurance Policy
         </h2>
         <p className="section-text">
-            The value of Marketparts is akin to a <strong>strategic insurance policy</strong>. We don't just generate sales; we <strong>prevent costly losses</strong> and preserve critical assets like client relationships and market share.
+            Investing in our service is not an expense; it's a strategic decision akin to taking out an insurance policy. It protects you from quantifiable financial losses and unquantifiable reputational damage. Here is how the value is calculated.
         </p>
 
         <div className="roi-card">
             <div className="roi-item">
-                <span className="roi-label">Step 1: Quantifying Your Risk (Monthly)</span>
-                <p className="roi-sub-label">Illustrative example for a €100M business.</p>
+                <span className="roi-label">1. The Cost of Uninsured Risk (The "Claim")</span>
+                <p className="roi-sub-label">This is the monthly cost your business absorbs by not managing strategic stock-outs.</p>
                 <ul className="roi-list">
-                    <li>Monthly Revenue: <strong>€8,333,333</strong></li>
-                    <li>Strategic Rupture Rate (3%): <strong>€250,000</strong></li>
-                    <li className="summary-line">Total Estimated Monthly Cost of Risk: <strong>€129,000</strong></li>
+                    <li>Strategic Rupture Value: <strong>€250,000</strong></li>
+                    <li>Estimated Lost Revenue (50%): <strong>-€125,000</strong></li>
+                    <li>Internal Operational Costs: <strong>-€4,000</strong></li>
+                    <li className="summary-line red-line">Total Monthly Cost of Risk: <strong>€129,000</strong></li>
                 </ul>
             </div>
             <div className="roi-item">
-                <span className="roi-label">Step 2: Marketparts' Value Preservation</span>
-                <p className="roi-sub-label">Assuming 90% resolution rate.</p>
+                <span className="roi-label">2. Your Marketparts Insurance (The "Premium")</span>
+                <p className="roi-sub-label">This is your total monthly investment in our service.</p>
                  <ul className="roi-list">
-                    <li>Commercial Value Preserved: <strong>€225,000</strong></li>
-                    <li>Operational Cost Savings: <strong>€4,000</strong></li>
-                    <li className="summary-line">Total Value Preserved by Marketparts: <strong>€229,000</strong></li>
-                </ul>
-            </div>
-            <div className="roi-item">
-                <span className="roi-label">Step 3: Marketparts Service Cost</span>
-                <p className="roi-sub-label">Illustrative example.</p>
-                 <ul className="roi-list">
-                    <li>Monthly Fixed Fee: <strong>€3,000</strong></li>
-                    <li>Monthly Incentive Fee (5%): <strong>€12,500</strong></li>
-                    <li className="summary-line">Total Monthly Cost: <strong>€15,500</strong></li>
+                    <li>Fixed Platform Fee: <strong>€3,000</strong></li>
+                    <li>Success & Logistics Fee (3% of €250k): <strong>€7,500</strong></li>
+                    <li>&nbsp;</li>
+                    <li className="summary-line blue-line">Total Monthly Investment: <strong>€10,500</strong></li>
                 </ul>
             </div>
             <div className="roi-item final-roi">
-                <span className="roi-label">Step 4: Your Net Financial Gain & ROI</span>
-                <p className="roi-sub-label">Risk Reduced vs. Cost Incurred.</p>
+                <span className="roi-label">3. Net Gain & Peace of Mind</span>
+                <p className="roi-sub-label">This is the net value you gain by being protected.</p>
                 <ul className="roi-list">
-                    <li>Net Monthly Value: <strong>€213,500</strong></li>
-                    <li className="summary-line">Estimated Return on Investment (ROI): ≈ <strong>1377%</strong></li>
+                    <li>Value Preserved by Marketparts: <strong>+€229,000</strong></li>
+                    <li>Cost of Marketparts Service: <strong>-€10,500</strong></li>
+                     <li>&nbsp;</li>
+                    <li className="summary-line green-line">Net Monthly Gain: <strong>€218,500</strong></li>
+                    <li className="summary-line green-line" style={{fontSize: '1.5rem', marginTop: '1rem'}}>ROI: ≈ <strong>2080%</strong></li>
                 </ul>
             </div>
         </div>
-
+        
         <div className="hidden-cost-section">
-            <h3 className="hidden-cost-title">Hidden Cost Alert: Logistic Penalties</h3>
+            <h3 className="hidden-cost-title">Your Unbeatable Competitive Advantage</h3>
             <p className="section-text">
-                Beyond calculable losses, many contracts include strict financial penalties for non-delivery. Our service actively works to prevent their occurrence by facilitating alternative fulfillment, providing an additional layer of insurance for your business.
+                In today's market, reliability is the ultimate currency. While your competitors struggle with stock-outs, apologize for delays, and lose customers, you offer <strong>absolute dependability</strong>. Our service transforms a critical weakness into your greatest strength, creating a powerful competitive barrier.
+            </p>
+            <p className="section-text">
+                This isn't just about protecting revenue; it's about building a brand that is synonymous with <strong>trust and serenity</strong>. That peace of mind for your clients is the most valuable asset we help you build.
             </p>
         </div>
     </section>
@@ -398,7 +397,6 @@ const GlobalHeader = ({ activeOffer, setActiveOffer, onResetSection }) => {
     const handleOfferClick = (offer) => {
         setActiveOffer(offer);
         if (offer === 'offer1') {
-            // Optionnel: reset la section de l'offre 1 quand on y revient
             onResetSection('challenge');
         }
     };
@@ -436,6 +434,11 @@ const App = () => {
 
     const CORRECT_PASSWORD = 'Marketparts';
 
+    // --- Mettre à jour le titre de la page ---
+    useEffect(() => {
+        document.title = 'Manufacturers Offers';
+    }, []);
+
     // --- Logique d'authentification ---
     const handleLogin = (password) => {
         if (password === CORRECT_PASSWORD) {
@@ -461,14 +464,12 @@ const App = () => {
             <GlobalHeader
                 activeOffer={activeOffer}
                 setActiveOffer={setActiveOffer}
-                // Passe une fonction vide car la gestion de la section est dans Offer1Content
                 onResetSection={() => {}} 
             />
 
             {activeOffer === 'offer1' && <Offer1Content />}
             {activeOffer === 'offer2' && <Offer2Content />}
 
-            {/* Injection de tous les styles CSS */}
             <style>{STYLES}</style>
         </div>
     );
@@ -476,7 +477,6 @@ const App = () => {
 
 // ===================================================================================
 // STYLES CSS
-// Tout le CSS est placé dans une constante pour la propreté.
 // ===================================================================================
 const STYLES = `
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap');
@@ -506,7 +506,6 @@ const STYLES = `
       -moz-osx-font-smoothing: grayscale;
     }
 
-    /* --- Login Screen --- */
     .login-container {
       display: flex;
       justify-content: center;
@@ -568,7 +567,6 @@ const STYLES = `
       font-size: 0.9rem;
     }
 
-    /* --- Main App Layout --- */
     .app-container {
       min-height: 100vh;
       display: flex;
@@ -579,7 +577,6 @@ const STYLES = `
     @media (min-width: 640px) { .app-container { padding: 1.5rem 2.5rem; } }
     @media (min-width: 1024px) { .app-container { padding: 2rem 3rem; } }
 
-    /* --- Global Header --- */
     .global-app-header {
       width: 100%;
       max-width: 960px;
@@ -630,7 +627,6 @@ const STYLES = `
       transform: translateY(-2px);
     }
 
-    /* --- Offer 1 Specific Header --- */
     .header-section {
       text-align: center;
       margin-bottom: 2.5rem;
@@ -651,7 +647,6 @@ const STYLES = `
       .subtitle { font-size: 1.5rem; }
     }
 
-    /* --- Offer 1 Navigation Bar --- */
     .nav-bar {
       display: flex;
       flex-wrap: nowrap;
@@ -693,7 +688,6 @@ const STYLES = `
       box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
     }
 
-    /* --- General Content Styling --- */
     .main-content {
       width: 100%;
       max-width: 960px;
@@ -756,7 +750,6 @@ const STYLES = `
     }
     .bullet-list li { margin-bottom: 0.75rem; }
 
-    /* --- Lists and Cards --- */
     .icon-list {
       list-style: none;
       padding: 0;
@@ -795,6 +788,8 @@ const STYLES = `
       box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
       border-left: 4px solid;
       background-color: rgba(0,0,0,0.2);
+      display: flex;
+      flex-direction: column;
     }
     .blue-card { border-left-color: var(--true-blue); }
     .green-card { border-left-color: var(--green-color); }
@@ -814,6 +809,7 @@ const STYLES = `
       font-size: 1rem;
       color: var(--dark-text-secondary);
       margin-bottom: 1rem;
+      flex-grow: 1;
     }
     .card-price {
       font-size: 1rem;
@@ -828,22 +824,24 @@ const STYLES = `
       font-style: italic;
     }
 
-    /* --- ROI Section Specific --- */
-    .roi-card, .hidden-cost-section {
-      background-color: rgba(0,0,0,0.2);
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      border-radius: 0.75rem;
-      padding: 1.5rem;
-      display: flex;
-      flex-direction: column;
+    .roi-card {
+      display: grid;
+      grid-template-columns: 1fr;
       gap: 1.5rem;
-      margin-top: 1.5rem;
+    }
+    @media (min-width: 1024px) {
+        .roi-card {
+            grid-template-columns: 1fr 1fr;
+        }
+        .roi-item.final-roi {
+            grid-column: 1 / -1; /* Span full width */
+        }
     }
     .roi-item {
       background-color: rgba(255, 255, 255, 0.05);
       border: 1px solid rgba(255, 255, 255, 0.1);
       border-radius: 0.5rem;
-      padding: 1rem;
+      padding: 1.5rem;
     }
     .roi-label {
       font-size: 1.125rem;
@@ -855,43 +853,46 @@ const STYLES = `
     .roi-sub-label {
       font-size: 0.95rem;
       color: var(--dark-text-secondary);
-      margin-bottom: 0.75rem;
+      margin-bottom: 1rem;
       font-style: italic;
     }
     .roi-list {
       list-style: none;
       padding: 0;
       margin: 0;
-      line-height: 1.6;
+      line-height: 1.7;
       color: var(--dark-text-secondary);
+      font-size: 1rem;
     }
     .roi-list li strong { color: var(--dark-text-primary); }
     .roi-list .summary-line {
       font-weight: 700;
-      color: var(--true-blue);
-      margin-top: 0.75rem;
-      border-top: 1px dashed rgba(255, 255, 255, 0.2);
-      padding-top: 0.5rem;
+      font-size: 1.1rem;
+      margin-top: 1rem;
+      border-top: 1px solid rgba(255, 255, 255, 0.2);
+      padding-top: 1rem;
     }
+    .red-line { color: var(--red-color); }
+    .blue-line { color: var(--true-blue); }
+    .green-line { color: var(--green-color); }
+    
     .final-roi {
-      background-color: rgba(16, 185, 129, 0.15);
+      background: linear-gradient(45deg, rgba(16, 185, 129, 0.1), rgba(16, 185, 129, 0.2));
       border-color: var(--green-color);
     }
-    .final-roi .roi-label {
-      color: var(--green-color);
-      font-size: 1.25rem;
-    }
-    .final-roi .summary-line {
-        color: var(--green-color);
-    }
+    .final-roi .roi-label { color: var(--green-color); }
+    
     .hidden-cost-section {
-      border-color: var(--red-color);
-      box-shadow: 0 4px 10px rgba(255, 0, 0, 0.2);
+      border: 1px solid var(--orange-color);
+      box-shadow: 0 4px 20px rgba(249, 115, 22, 0.2);
+      margin-top: 2rem;
+      padding: 1.5rem;
+      border-radius: 0.75rem;
     }
     .hidden-cost-title {
       font-size: 1.75rem;
       font-weight: 700;
-      color: var(--red-color);
+      color: var(--orange-color);
       margin-bottom: 1rem;
       text-align: center;
     }
