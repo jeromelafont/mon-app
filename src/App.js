@@ -196,22 +196,22 @@ const PricingSection = () => (
                     This fixed monthly fee covers integration, platform access, and our dedicated support team, ensuring we are always ready to act on your behalf.
                 </p>
                 <p className="card-price">
-                    <span className="card-price-value">€3,000</span> / month
+                    <span className="card-price-value">€3,000 - €10,000</span> / month
                 </p>
                 <p className="card-note">
-                    (Illustrative fixed fee)
+                    (Adjusted based on complexity, data volume, and SLA.)
                 </p>
             </div>
             <div className="info-card green-card">
-                <h3 className="card-title">Success & Logistics Fee</h3>
+                <h3 className="card-title">Success Fee + Actual Logistics Costs</h3>
                 <p className="card-text">
-                    A single, all-inclusive commission on the ex-tax revenue of each stock-out we successfully resolve. This unique rate <strong>covers all associated logistics and shipping costs</strong> for moving parts within our network. You pay only for results.
+                    A performance-based commission of 3% is applied to the ex-tax revenue of each stock-out we successfully resolve. To this is added the transparent invoicing of the <strong>actual logistics and transport costs</strong> for moving the parts.
                 </p>
                 <p className="card-price">
-                    <span className="card-price-value">3%</span> per managed transaction
+                    <span className="card-price-value">3%</span> + Actual Costs
                 </p>
                 <p className="card-note">
-                    (Performance-based, all-inclusive rate)
+                    (You only pay for performance and real, auditable costs.)
                 </p>
             </div>
         </div>
@@ -242,12 +242,12 @@ const RoiSection = () => (
             </div>
             <div className="roi-item">
                 <span className="roi-label">2. Your Marketparts Insurance (The "Premium")</span>
-                <p className="roi-sub-label">This is your total monthly investment in our service.</p>
+                <p className="roi-sub-label">Your total monthly investment, based on illustrative averages.</p>
                  <ul className="roi-list">
-                    <li>Fixed Platform Fee: <strong>€3,000</strong></li>
-                    <li>Success & Logistics Fee (3% of €250k): <strong>€7,500</strong></li>
-                    <li>&nbsp;</li>
-                    <li className="summary-line blue-line">Total Monthly Investment: <strong>€10,500</strong></li>
+                    <li>Platform Fee (average): <strong>€5,000</strong></li>
+                    <li>Success Fee (3% of €250k): <strong>€7,500</strong></li>
+                    <li>Estimated Logistics Costs: <strong>€2,500</strong></li>
+                    <li className="summary-line blue-line">Total Monthly Investment: <strong>€15,000</strong></li>
                 </ul>
             </div>
             <div className="roi-item final-roi">
@@ -255,14 +255,23 @@ const RoiSection = () => (
                 <p className="roi-sub-label">This is the net value you gain by being protected.</p>
                 <ul className="roi-list">
                     <li>Value Preserved by Marketparts: <strong>+€229,000</strong></li>
-                    <li>Cost of Marketparts Service: <strong>-€10,500</strong></li>
-                     <li>&nbsp;</li>
-                    <li className="summary-line green-line">Net Monthly Gain: <strong>€218,500</strong></li>
-                    <li className="summary-line green-line" style={{fontSize: '1.5rem', marginTop: '1rem'}}>ROI: ≈ <strong>2080%</strong></li>
+                    <li>Cost of Marketparts Service: <strong>-€15,000</strong></li>
+                    <li className="summary-line green-line">Net Monthly Gain: <strong>€214,000</strong></li>
+                    <li className="summary-line green-line" style={{fontSize: '1.5rem', marginTop: '1rem'}}>ROI: ≈ <strong>1426%</strong></li>
                 </ul>
             </div>
         </div>
         
+        <div className="hidden-cost-section">
+             <h3 className="hidden-cost-title" style={{color: 'var(--red-color)'}}>Hidden Cost Alert: Logistic Penalties</h3>
+             <p className="section-text">
+                 Beyond the directly calculable losses, there's another significant, often unseen, financial impact: <strong>logistic penalties</strong>. Many contracts with major distributors include strict clauses for non-compliance with delivery terms.
+             </p>
+             <p className="section-text">
+                 Our service actively works to <strong>prevent their occurrence</strong> by facilitating alternative fulfillment for strategic ruptures. This helps you avoid triggering these costly clauses, further safeguarding your margins—a benefit not even included in the ROI calculation above.
+             </p>
+        </div>
+
         <div className="hidden-cost-section">
             <h3 className="hidden-cost-title">Your Unbeatable Competitive Advantage</h3>
             <p className="section-text">
