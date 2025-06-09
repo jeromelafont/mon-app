@@ -2,11 +2,29 @@ import React, { useState } from 'react';
 
 // Main App Component
 const App = () => {
+  // State for password protection
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [password, setPassword] = useState('');
+  const [passwordError, setPasswordError] = useState('');
+
+  // Password for the app
+  const CORRECT_PASSWORD = 'Marketparts';
+
+  // Function to handle password submission
+  const handleLogin = () => {
+    if (password === CORRECT_PASSWORD) {
+      setIsAuthenticated(true);
+      setPasswordError('');
+    } else {
+      setPasswordError('Incorrect password. Please try again.');
+    }
+  };
+
   // State to manage which section is active in the interactive display
-  // 'challenge', 'solution', 'benefits', 'pricing', 'expectations', 'llm-feature'
+  // Order of tabs: 'challenge', 'solution', 'benefits', 'expectations', 'pricing', 'roi-calculation'
   const [activeSection, setActiveSection] = useState('challenge'); 
 
-  // States for LLM feature
+  // States for LLM feature (currently hidden but functionality remains)
   const [partNumber, setPartNumber] = useState('');
   const [delay, setDelay] = useState('');
   const [proposedSolution, setProposedSolution] = useState('');
@@ -25,6 +43,7 @@ const App = () => {
   );
 
   // Function to call Gemini API for communication draft
+  // This functionality is still present even if the tab is hidden
   const generateCommunicationDraft = async () => {
     setIsLoadingLLM(true);
     setLlmError('');
@@ -43,10 +62,6 @@ const App = () => {
       chatHistory.push({ role: "user", parts: [{ text: prompt }] });
       const payload = { contents: chatHistory };
       
-      // IMPORTANT: For local development and deployment, you MUST provide your actual Gemini API Key.
-      // This 'apiKey' constant is left empty here because the Canvas environment injects it at runtime.
-      // For your own environment, you should use environment variables (e.g., process.env.REACT_APP_GEMINI_API_KEY)
-      // and securely configure them on your hosting platform.
       const apiKey = ""; 
       const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
 
@@ -58,7 +73,6 @@ const App = () => {
 
       const result = await response.json();
 
-      // Check for a valid response structure from the Gemini API
       if (result.candidates && result.candidates.length > 0 &&
           result.candidates[0].content && result.candidates[0].content.parts &&
           result.candidates[0].content.parts.length > 0) {
@@ -76,13 +90,125 @@ const App = () => {
     }
   };
 
+  // Render password input if not authenticated
+  if (!isAuthenticated) {
+    return (
+      <div className="login-container">
+        <div className="login-box">
+          <h2 className="login-title">Enter Password to Access "Manufacturers offers"</h2>
+          <input
+            type="password"
+            className="login-input"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            onKeyPress={(e) => {
+              if (e.key === 'Enter') {
+                handleLogin();
+              }
+            }}
+            placeholder="Password"
+          />
+          <button className="login-button" onClick={handleLogin}>
+            Login
+          </button>
+          {passwordError && <p className="login-error">{passwordError}</p>}
+        </div>
+        <style>
+          {`
+            @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap');
+
+            :root {
+              --midnight-blue: #002074;
+              --true-blue: #1a7dff;
+              --white: #ffffff;
+            }
+
+            body {
+              font-family: 'Inter', sans-serif;
+              margin: 0;
+              background-color: #000000; /* Black background */
+              color: var(--white);
+              display: flex;
+              justify-content: center;
+              align-items: center;
+              min-height: 100vh;
+            }
+            .login-container {
+              display: flex;
+              justify-content: center;
+              align-items: center;
+              min-height: 100vh;
+              width: 100%;
+              background-color: #000000;
+            }
+            .login-box {
+              background-color: var(--midnight-blue);
+              padding: 2.5rem;
+              border-radius: 0.75rem;
+              box-shadow: 0 10px 20px rgba(0, 0, 0, 0.4);
+              text-align: center;
+              max-width: 400px;
+              width: 90%;
+              border: 1px solid rgba(255, 255, 255, 0.1);
+            }
+            .login-title {
+              font-size: 1.75rem;
+              font-weight: 700;
+              color: var(--true-blue);
+              margin-bottom: 1.5rem;
+            }
+            .login-input {
+              width: calc(100% - 20px);
+              padding: 0.75rem 10px;
+              margin-bottom: 1rem;
+              border-radius: 0.5rem;
+              border: 1px solid rgba(255, 255, 255, 0.3);
+              background-color: rgba(255, 255, 255, 0.05);
+              color: var(--white);
+              font-size: 1rem;
+            }
+            .login-input::placeholder {
+              color: rgba(255, 255, 255, 0.6);
+            }
+            .login-input:focus {
+              outline: none;
+              border-color: var(--true-blue);
+              box-shadow: 0 0 0 3px rgba(26, 125, 255, 0.3);
+            }
+            .login-button {
+              background-color: var(--true-blue);
+              color: var(--white);
+              padding: 0.75rem 1.5rem;
+              border-radius: 0.5rem;
+              border: none;
+              font-size: 1rem;
+              font-weight: 600;
+              cursor: pointer;
+              transition: background-color 0.3s ease, transform 0.2s ease;
+            }
+            .login-button:hover {
+              background-color: #0060d4; /* Darker true blue */
+              transform: translateY(-2px);
+            }
+            .login-error {
+              color: #EF4444; /* Red color for error */
+              margin-top: 1rem;
+              font-size: 0.9rem;
+            }
+          `}
+        </style>
+      </div>
+    );
+  }
+
+  // Render the main app content if authenticated
   return (
     // Main container for the entire application
     <div className="app-container">
       {/* Header Section */}
       <header className="header-section">
         <h1 className="main-title">
-          Marketparts: Turn Stock-Outs into Stronger Customer Bonds
+          Manufacturers offers
         </h1>
         <p className="subtitle">
           Your Strategic Partner for Proactive Stock-Out Management
@@ -94,9 +220,11 @@ const App = () => {
         <SectionTitle sectionId="challenge">The Challenge</SectionTitle>
         <SectionTitle sectionId="solution">Our Solution</SectionTitle>
         <SectionTitle sectionId="benefits">Your Benefits</SectionTitle>
-        <SectionTitle sectionId="pricing">Pricing Model</SectionTitle>
         <SectionTitle sectionId="expectations">Our Partnership: Your Role</SectionTitle>
-        <SectionTitle sectionId="llm-feature">✨ AI Communication</SectionTitle>
+        <SectionTitle sectionId="pricing">Pricing Model</SectionTitle>
+        <SectionTitle sectionId="roi-calculation">ROI Calculation</SectionTitle>
+        {/* AI Communication tab is hidden */}
+        {/* <SectionTitle sectionId="llm-feature">✨ AI Communication</SectionTitle> */}
       </nav>
 
       {/* Content Display Area - dynamically rendered based on activeSection */}
@@ -108,17 +236,20 @@ const App = () => {
               <svg className="section-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
               </svg>
-              The Challenge: Are Stock-Outs Your Weak Link?
+              The Challenge: When 3% of Ruptures Threaten 100% of Your Business
             </h2>
             <p className="section-text">
-              Every stock-out is a direct threat to your **customers' satisfaction** and your **brand's image**. It leads to frustration, lost sales, and resource drain. Your internal teams get swamped managing these incidents, and maintaining impeccable customer service becomes a constant struggle.
+              Stock-outs are a constant challenge, but the real threat lies in **strategic ruptures** – especially those affecting **"fast movers"**. For an equipment manufacturer with an annual revenue of **€100 million**, an overall 10% rupture rate already represents significant risk. However, the critical impact comes from the **3% of these ruptures that concern "fast movers"**. These high-demand parts are crucial for your clients (distributors, workshops), as their absence leads to **direct and immediate lost revenue** for the end-customer.
             </p>
             <ul className="bullet-list">
-              <li>Customer dissatisfaction and churn risk.</li>
-              <li>Increased workload for your sales, logistics, and after-sales teams.</li>
-              <li>Damage to brand reputation and trust.</li>
-              <li>Hidden costs from dispute resolution and lost opportunities.</li>
+              <li>**Direct Financial Impact on Clients:** A workshop cannot perform repairs, a distributor cannot sell. This directly translates to lost earnings and severe frustration for your customers.</li>
+              <li>**Erosion of Trust and Brand Image:** When critical parts are unavailable, client trust erodes. Customers start seeking alternatives, including from competitors, directly threatening your **market share** and **customer lifetime value (CLV)**.</li>
+              <li>**Compliance & Reputation Risk:** Unmanaged ruptures can lead to contractual penalties with large distributors or warranty issues, highlighting a lack of **compliance** and damaging your reputation as a reliable supplier.</li>
+              <li>**Internal Resource Drain:** Managing these strategic ruptures diverts your sales and after-sales teams from value-generating tasks, leading to unproductive time and increased operational costs.</li>
             </ul>
+            <p className="section-text">
+              These **3% of strategic ruptures** are not just "incidents"; they are **critical failure points** that can have disproportionate repercussions on your revenue, reputation, and operational **compliance**.
+            </p>
           </section>
         )}
 
@@ -129,10 +260,10 @@ const App = () => {
               <svg className="section-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
               </svg>
-              Our Solution: A Premium, Discreet Service That Works For You
+              Our Solution: Comprehensive Risk Mitigation, Integrating Compliance & Marketparts Assets
             </h2>
             <p className="section-text">
-              Marketparts offers a comprehensive, proactive external stock-out management solution. We act **on your behalf, confidentially**, transforming every incident into an **opportunity to boost your customers' loyalty**. This premium service is a key asset you can offer your own clients, further solidifying their trust.
+              Marketparts offers an integrated approach to transform strategic ruptures into a demonstration of your excellence and commitment to **compliance**. We leverage our unique **assets** to provide a seamless and effective solution.
             </p>
             <h3 className="sub-heading">How We Operate:</h3>
             <ul className="icon-list">
@@ -141,7 +272,8 @@ const App = () => {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 11l3-3m0 0l3 3m-3-3v8m0-13a9 9 0 110 18 9 9 0 010-18z"></path>
                 </svg>
                 <div>
-                  <strong className="list-item-strong">Proactive Detection:</strong> Seamless and secure integration with your systems to instantly identify orders affected by a stock-out.
+                  <strong className="list-item-strong">Proactive & Compliant Detection (Leveraging Marketparts Algorithms):</strong> <br/>
+                  We integrate our **advanced AI algorithms** and systems with your ERP and your connected distributor network. This enables real-time analysis of **stock data** and demand patterns, instantly identifying ruptures, especially those critical **"fast movers"**. All data handling strictly adheres to **GDPR/RGPD compliance** and established data privacy agreements, ensuring secure and lawful operations.
                 </div>
               </li>
               <li>
@@ -149,7 +281,8 @@ const App = () => {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path>
                 </svg>
                 <div>
-                  <strong className="list-item-strong">Direct Customer Communication:</strong> Our experts contact **your clients** directly, presenting themselves as an extension of your service, ensuring transparent and empathetic communication.
+                  <strong className="list-item-strong">Validated Communication & Co-Communication (Marketparts Expert Teams):</strong> <br/>
+                  Upon identifying a strategic rupture, our **dedicated team of communication experts** initiates proactive contact with the impacted client, acting **in your name** and using your **pre-approved brand tone and messaging**. Communication scripts are developed and validated with you to ensure **compliance** with your internal policies and any industry-specific regulations. This collaborative approach reinforces your brand's commitment.
                 </div>
               </li>
               <li>
@@ -157,7 +290,8 @@ const App = () => {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M11 4a2 2 0 100 4m-4 10a2 2 0 100 4m10-4a2 2 0 100 4m-8-12l9 9H3L9 5z"></path>
                 </svg>
                 <div>
-                  <strong className="list-item-strong">Rapid Solution Search:</strong> We actively identify and propose alternatives (equivalent parts, alternative stock, production acceleration) to minimize impact and reduce delays.
+                  <strong className="list-item-strong">Optimized Fulfillment via Marketparts Network (Our Proprietary Network & Platform):</strong> <br/>
+                  Leveraging our **extensive proprietary network of connected distributors** and their real-time stock availability, we swiftly identify alternative sources for the missing part. We facilitate the transaction to ensure the part reaches the end-customer. While you may not directly book this specific sale, you **prevent a permanent lost sale** and **protect your market share**. All transactions are facilitated through our **secure platform**, ensuring **commercial and logistical compliance** with agreed-upon terms.
                 </div>
               </li>
               <li>
@@ -165,7 +299,8 @@ const App = () => {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"></path>
                 </svg>
                 <div>
-                  <strong className="list-item-strong">Transparent Tracking and Reporting:</strong> Your clients are kept informed, and you receive clear dashboards on performance and customer satisfaction.
+                  <strong className="list-item-strong">Transparent Reporting & Continuous Improvement (Marketparts' Risk Intelligence Tools):</strong> <br/>
+                  We provide detailed, **compliant reports** on resolution times, client satisfaction, and the specific impact on strategic ruptures. The granular data collected through our **risk intelligence tools** helps you identify recurring weaknesses in your supply chain and forecast demand more accurately, leading to long-term operational improvements and fewer future "sinistres".
                 </div>
               </li>
             </ul>
@@ -179,10 +314,10 @@ const App = () => {
               <svg className="section-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
               </svg>
-              Your Immediate Added Value: A Partnership for Growth
+              Your Immediate Added Value: A Partnership for Growth & Protection
             </h2>
             <p className="section-text">
-              While Marketparts already has experience with your clients, this **new partnership model** offers a deeper, more integrated approach that unlocks significant benefits directly for your business. We move beyond simple management to becoming a strategic extension of your brand.
+              While Marketparts already has experience with your clients, this **new partnership model** offers a deeper, more integrated approach that unlocks significant benefits directly for your business. We move beyond simple management to becoming a strategic extension of your brand, **protecting your market share and client relationships** even when you can't deliver directly.
             </p>
             <ul className="icon-list">
               <li>
@@ -190,8 +325,8 @@ const App = () => {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path>
                 </svg>
                 <div>
-                  <strong className="list-item-strong">Accelerated Customer Loyalty & Brand Reinforcement:</strong>
-                  Even when issues arise, your responsiveness makes all the difference. By acting **in your name and under your brand guidelines**, we ensure seamless, consistent, and empathetic communication. This transforms a potential frustration into a positive brand touchpoint, directly impacting repeat business, word-of-mouth referrals, and strengthening long-term client relationships. Your brand's reputation for reliability is actively enhanced, not just preserved.
+                  <strong className="list-item-strong">Client Retention & Brand Integrity (Your Loyalty Insurance):</strong>
+                  We ensure your customers remain loyal to *your* brand, even when you face stock-outs. By acting **in your name** and finding alternative fulfillment via our network, we prevent your clients from turning to competitors. This preserves your hard-earned client relationships and reinforces your brand's reputation for reliability and customer care, regardless of direct delivery source, acting as a direct **protection of your customer lifetime value**.
                 </div>
               </li>
               <li>
@@ -199,8 +334,8 @@ const App = () => {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2"></path>
                 </svg>
                 <div>
-                  <strong className="list-item-strong">Significant Resource Liberation & Strategic Focus:</strong>
-                  Liberate your sales, logistics, and after-sales teams from the time-consuming, often stressful, and reactive tasks of stock-out management. This isn't just about offloading work; it's about enabling your most valuable talent to focus on core business activities, strategic growth initiatives, product innovation, and expanding market share.
+                  <strong className="list-item-strong">Resource Optimization & Strategic Focus (Reducing Operational Exposure):</strong>
+                  Free your internal sales, logistics, and after-sales teams from the reactive burden of managing stock-out crises. This isn't just about offloading work; it's about enabling your most valuable talent to focus on core business activities, strategic growth initiatives, product innovation, and expanding market share. Think of us as your **"operational claims department,"** handling the heavy lifting and freeing your internal adjusters.
                 </div>
               </li>
               <li>
@@ -208,62 +343,20 @@ const App = () => {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
                 </svg>
                 <div>
-                  <strong className="list-item-strong">Tangible Reduction in Hidden Costs & Revenue Protection:</strong>
-                  Proactive management directly minimizes financial drains. This includes fewer order cancellations, reduced logistical penalties, less time spent on dispute resolution, and crucially, prevention of lost future orders due to a negative customer experience. By efficiently managing affected sales, we actively protect and recover your potential revenue.
+                  <strong className="list-item-strong">Market Share Protection & Lost Sale Mitigation (Your Market Share Coverage Policy):</strong>
+                  Our service directly counters the risk of losing market share due to non-delivery. By ensuring your customers still receive the part (even if via another distributor in your ecosystem), we prevent competitors from stepping in and capturing *your* customer base. This is a critical investment in maintaining your competitive position, essentially a **"policy against competitive encroachment"**.
+                </div>
+              </li>
+              <li>
+                <svg className="list-icon purple-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                </svg>
+                <div>
+                  <strong className="list-item-strong">Valuable Supply Chain Insights & Continuous Improvement (Risk Intelligence & Underwriting Data):</strong>
+                  Beyond reactive solutions, our detailed analysis of rupture patterns and distributor network demands provides you with invaluable data. This intelligence helps you proactively identify weaknesses in your own supply chain and demand forecasting, leading to long-term operational improvements and fewer future stock-outs. We provide you with the **"risk intelligence"** needed to refine your own "underwriting" (supply chain planning).
                 </div>
               </li>
             </ul>
-
-            <h3 className="sub-heading mt-8">Illustrative Return on Investment (ROI)</h3>
-            <p className="section-text">
-              Let's illustrate the potential financial impact of partnering with Marketparts, based on typical scenarios:
-            </p>
-
-            <div className="roi-card">
-              <div className="roi-item">
-                <span className="roi-label">Hypothèses Mensuelles</span>
-                <ul className="roi-list">
-                  <li>Nombre moyen de cas de rupture : **50**</li>
-                  <li>Valeur moyenne d'une commande impactée : **€1,000**</li>
-                  <li>Taux de commandes sauvées (non annulées) : **60%**</li>
-                  <li>Temps interne économisé par cas : **2 heures**</li>
-                  <li>Coût horaire moyen équipe interne : **€40**</li>
-                  <li>Frais Fixe Marketparts (hypothétique) : **€3,000**</li>
-                  <li>Incentive Marketparts : **5%** du CA HT géré</li>
-                </ul>
-              </div>
-              <div className="roi-item">
-                <span className="roi-label">Calcul des Bénéfices</span>
-                <ul className="roi-list">
-                  <li>Chiffre d'Affaires HT Géré : 50 cas * €1,000 = **€50,000**</li>
-                  <li>Revenus Sauvés : €50,000 * 60% = **€30,000**</li>
-                  <li>Heures Économisées : 50 cas * 2h = **100 heures**</li>
-                  <li>Économies sur Coûts Équipe : 100h * €40 = **€4,000**</li>
-                  <li>**Bénéfices Totaux Mensuels : €30,000 + €4,000 = €34,000**</li>
-                </ul>
-              </div>
-              <div className="roi-item">
-                <span className="roi-label">Coût Marketparts</span>
-                <ul className="roi-list">
-                  <li>Coût Fixe Mensuel : **€3,000**</li>
-                  <li>Incentive (5% de €50,000) : **€2,500**</li>
-                  <li>**Coût Total Marketparts Mensuel : €3,000 + €2,500 = €5,500**</li>
-                </ul>
-              </div>
-              <div className="roi-item final-roi">
-                <span className="roi-label">Résultat et ROI Estimé</span>
-                <ul className="roi-list">
-                  <li>Gain Net Mensuel : €34,000 - €5,500 = **€28,500**</li>
-                  <li>**ROI Estimé : (€28,500 / €5,500) * 100% ≈ 518%**</li>
-                </ul>
-                <p className="roi-disclaimer">
-                  *Cet exemple est illustratif. Votre ROI réel dépendra de vos volumes, valeurs de commande et de nos accords spécifiques.*
-                </p>
-              </div>
-            </div>
-            <p className="section-text mt-6">
-              By working hand-in-hand, we can ensure that every stock-out is managed with maximum efficiency, transparency, and care, turning potential frustration into a testament to your customer commitment.
-            </p>
           </section>
         )}
 
@@ -274,10 +367,10 @@ const App = () => {
               <svg className="section-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"></path>
               </svg>
-              Our Pricing Model: Fixed + Incentive on Recovered Revenue
+              Our Pricing Model: Fixed + Incentive on Value Preserved
             </h2>
             <p className="section-text">
-              We've designed a pricing model that combines the **predictability of a subscription** with a **performance-based incentive aligned with your actual revenue**.
+              We've designed a pricing model that combines the **predictability of a subscription** with a **performance-based incentive aligned with the value we preserve** for your business.
             </p>
 
             <div className="card-container">
@@ -303,7 +396,7 @@ const App = () => {
                   <span className="card-bullet green-bullet">●</span> Incentive on Managed Ex-Tax Revenue (Performance-Based)
                 </h3>
                 <p className="card-text">
-                  In addition to the fixed fees, a prime is paid as a **percentage of the Ex-Tax Revenue (CA HT)** from each stock-out transaction we successfully manage. This covers notification, solution proposal, tracking, and resolution.
+                  In addition to the fixed fees, an incentive is applied as a **percentage of the Ex-Tax Revenue (CA HT)** of each stock-out transaction where we successfully found an alternative fulfillment via our network. This is your investment for the service that ensures the sale remains within your ecosystem and prevents customer churn.
                 </p>
                 <p className="card-price">
                   <span className="card-price-value">3% to 7%</span> of the managed ex-tax revenue (CA HT) per transaction
@@ -337,7 +430,7 @@ const App = () => {
               {/* Data Sharing */}
               <div className="info-card orange-card">
                 <h3 className="card-title card-title-icon">
-                  <svg className="card-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
+                  <svg className="card-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16v1a3 3 0 003 3h10a3 3 0_003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
                   Timely & Accurate Data Sharing
                 </h3>
                 <p className="card-text">
@@ -385,6 +478,108 @@ const App = () => {
           </section>
         )}
 
+        {activeSection === 'roi-calculation' && (
+          <section className="content-section animate-fade-in">
+            <h2 className="section-heading benefits-heading"> {/* Using benefits-heading for ROI icon color */}
+              {/* Icon for ROI Calculation */}
+              <svg className="section-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+              </svg>
+              Return on Investment (ROI): The Strategic Value of Our Partnership
+            </h2>
+            <p className="section-text">
+              The true value of Marketparts is akin to a **strategic insurance policy** for your business. We don't just generate sales; we **prevent costly losses** and **preserve critical assets** (client relationships, market share) that are directly impacted by stock-outs. The ROI demonstrates that the investment in Marketparts is significantly outweighed by the value of the risks we mitigate.
+            </p>
+
+            <div className="roi-card">
+              <div className="roi-item">
+                <span className="roi-label">Step 1: Quantifying Your Current Risk Exposure (Monthly)</span>
+                <p className="roi-sub-label">What is the potential financial and operational cost if crucial stock-out situations are *not* effectively managed today?</p>
+                <ul className="roi-list">
+                  <li>Total Annual Revenue (illustrative): **€100,000,000**</li>
+                  <li>Monthly Revenue: **€8,333,333** (approx.)</li>
+                  <li>**Overall Rupture Rate (Current Service Rate 90%):** **10%** of Monthly Revenue = **€833,333**</li>
+                  <li className="nested-li">
+                    <small>(This is the total value of orders facing rupture, both strategic and non-strategic)</small>
+                  </li>
+                  <li>**Strategic Rupture Rate (Fast Movers):** **3%** of Monthly Revenue = **€250,000**</li>
+                  <li className="nested-li">
+                    <small>(These are the critical ruptures leading to direct client loss of earnings, and are Marketparts' primary target for intervention.)</small>
+                  </li>
+                  <li className="nested-li">
+                    <small>Estimated percentage of these strategic ruptures (€250,000) that are *permanently lost* or *diverted to competitors* without Marketparts' intervention:</small> **50%**
+                  </li>
+                  <li>**A. Estimated Direct Lost Revenue (Cost of Unmanaged Risk):** €250,000 * 50% = **€125,000**</li>
+                  <li className="nested-li">
+                    <small>*(This represents the sales value that would be irrevocably lost from your ecosystem.)*</small>
+                  </li>
+                  <li>Estimated Internal Team Time Loss (for *all* 50 cases of rupture, strategic and non-strategic, leading to internal handling/frustration): **2 hours / case**</li>
+                  <li>Number of monthly rupture cases (approximated based on €250,000 strategic value / €5,000 avg order value): **50 cases**</li>
+                  <li>Average Cost of Internal Team Time (fully loaded): **€40 / hour**</li>
+                  <li>**B. Operational Cost of Unmanaged Risk (Internal Team Time):** 50 cases * 2 hours * €40/hour = **€4,000**</li>
+                  <li className="nested-li">
+                    <small>*(This is the cost of internal resources tied up in unproductive crisis management.)*</small>
+                  </li>
+                  <li className="summary-line">
+                    **Total Estimated Monthly Cost of Unmanaged Strategic Rupture Risk (A+B):** **€125,000 (Lost Sales) + €4,000 (Operational) = €129,000**
+                    <li className="nested-li"><small>*(This is the "bill" your company effectively pays each month for unmitigated stock-out risks.)*</small></li>
+                  </li>
+                </ul>
+              </div>
+              <div className="roi-item">
+                <span className="roi-label">Step 2: Marketparts' Risk Mitigation & Value Preservation (Monthly)</span>
+                <p className="roi-sub-label">How effectively do we reduce this risk and preserve value for your business?</p>
+                <ul className="roi-list">
+                  <li>**Marketparts' Strategic Rupture Resolution Rate:** Marketparts successfully resolves **90%** of the **strategic ruptures** (€250,000 value).</li>
+                  <li className="nested-li">
+                    <small>(This means 90% of the €250,000 in strategic sales value is salvaged via our network. Your effective service rate for *these critical orders* improves significantly.)</small>
+                  </li>
+                  <li>**C. Commercial Value Preserved / Lost Sales Avoided:** €250,000 * 90% = **€225,000**</li>
+                  <li className="nested-li">
+                    <small>*(This is the revenue that would have been lost or permanently diverted from your ecosystem without Marketparts' intervention. It's the "indemnification" of lost sales.)*</small>
+                  </li>
+                  <li>**D. Operational Cost Savings (Internal Team Time):** By taking over the management of these 50 rupture cases, we absorb the operational burden: **€4,000**</li>
+                  <li className="nested-li">
+                    <small>*(This is the direct saving from freeing your internal teams for strategic work.)*</small>
+                  </li>
+                  <li className="summary-line">
+                    **Total Value Preserved by Marketparts (C+D):** **€225,000 (Commercial Value Preserved) + €4,000 (Operational Savings) = €229,000**
+                    <li className="nested-li"><small>*(This is the total value Marketparts "returns" to your company each month by protecting against critical losses.)*</small></li>
+                  </li>
+                </ul>
+              </div>
+              <div className="roi-item">
+                <span className="roi-label">Step 3: Marketparts Service Cost (Monthly)</span>
+                <p className="roi-sub-label">Your investment in Marketparts' comprehensive risk mitigation solution (Your "Insurance Premium").</p>
+                <ul className="roi-list">
+                  <li>Monthly Fixed Fee (illustrative): **€3,000**</li>
+                  <li>Monthly Incentive Fee (5% of €250,000 total managed value): **€12,500**</li>
+                  <li className="summary-line">
+                    **Total Monthly Cost of Marketparts Service:** **€3,000 + €12,500 = €15,500**
+                  </li>
+                </ul>
+              </div>
+              <div className="roi-item final-roi">
+                <span className="roi-label">Step 4: Your Net Financial Gain & Estimated ROI</span>
+                <p className="roi-sub-label">The tangible financial benefit of partnering with Marketparts: **Risk Reduced vs. Cost Incurred.**</p>
+                <ul className="roi-list">
+                  <li>**Net Monthly Value (Total Value Preserved - Total Marketparts Cost):** €229,000 - €15,500 = **€213,500**</li>
+                  <li className="summary-line">
+                    **Estimated Return on Investment (ROI):** (€213,500 / €15,500) * 100% ≈ **1377%**
+                  </li>
+                </ul>
+                <p className="roi-disclaimer">
+                  *This example is illustrative and uses generalized assumptions. Your actual ROI will depend on your specific volumes, order values, the severity of stock-outs, and our tailored agreements. The ROI represents the financial value of losses prevented and internal resources optimized. **A positive ROI indicates that the value of the risk mitigated exceeds the cost of the service.** *
+                </p>
+              </div>
+            </div>
+            <p className="section-text mt-6">
+              By working hand-in-hand, we can ensure that every stock-out is managed with maximum efficiency, transparency, and care, turning potential frustration into a testament to your customer commitment.
+            </p>
+          </section>
+        )}
+
+        {/* AI Communication tab is hidden, but functionality remains */}
         {activeSection === 'llm-feature' && (
           <section className="content-section animate-fade-in">
             <h2 className="section-heading llm-heading">
@@ -431,8 +626,8 @@ const App = () => {
                 </label>
                 <textarea
                   id="proposedSolution"
-                  rows="3"
                   className="form-textarea"
+                  rows="3"
                   value={proposedSolution}
                   onChange={(e) => setProposedSolution(e.target.value)}
                   placeholder="e.g., An equivalent part is available, or priority re-stocking is arranged."
@@ -487,8 +682,8 @@ const App = () => {
         )}
       </main>
 
-      {/* Call to Action */}
-      <footer className="footer-section">
+      {/* Footer is removed as per request */}
+      {/* <footer className="footer-section">
         <h2 className="footer-title">
           Ready to turn your stock-outs into a competitive advantage?
         </h2>
@@ -497,23 +692,22 @@ const App = () => {
         </p>
         <div className="contact-buttons-container">
           <a
-            href="mailto:contact@marketparts.com" // Replace with actual email
+            href="mailto:contact@marketparts.com" 
             className="contact-button white-button"
           >
             Email Us
           </a>
           <a
-            href="tel:+33123456789" // Replace with actual phone number
+            href="tel:+33123456789" 
             className="contact-button blue-button"
           >
             Call Us
-
           </a>
         </div>
         <p className="footer-info">
           Marketparts Team | Marketparts.com
         </p>
-      </footer>
+      </footer> */}
 
       {/* Standard CSS Styles */}
       <style>
@@ -521,29 +715,38 @@ const App = () => {
           @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap');
 
           :root {
-            --primary-blue: #2563EB;
-            --dark-blue: #1E40AF;
-            --light-blue: #DBEAFE;
-            --medium-blue: #3B82F6;
-            --text-color-dark: #1F2937;
-            --text-color-medium: #4B5563;
-            --text-color-light: #6B7280;
-            --red-color: #EF4444;
-            --green-color: #10B981;
-            --purple-color: #8B5CF6;
-            --dark-purple: #7C3AED;
-            --orange-color: #F97316;
-            --light-orange: #FFEDD5;
-            --pink-color: #EC4899;
+            /* Marketparts Brand Colors */
+            --midnight-blue: #002074;
+            --true-blue: #1a7dff;
+            --white: #ffffff;
+            --indigo-purple: #4b0082;
+            
+            /* Derived Dark Theme Colors */
+            --dark-background-primary: #000000; /* True black background */
+            --dark-card-background: var(--midnight-blue);   /* Midnight Blue for main content/card backgrounds */
+            
+            /* Enhanced Text Colors for Readability on Dark Backgrounds */
+            --dark-text-primary: var(--white); /* Pure white for primary text, headings, strong */
+            --dark-text-secondary: rgba(255, 255, 255, 0.95); /* Very light gray for general text */
+            --dark-text-tertiary: rgba(255, 255, 255, 0.7); /* Lighter gray for subtle text/notes */
+            
+            /* Derived Light/Accent Colors (functional colors, adapted for dark theme) */
+            --light-true-blue: #EBF5FF; /* A very light shade of true blue for accents (e.g., hover on white button) */
+            --darker-true-blue: #0060d4; /* A slightly darker shade of true blue for hovers */
+            --red-color: #EF4444;   /* For errors, alerts */
+            --green-color: #10B981; /* For success, positive highlights */
+            --orange-color: #F97316; /* For warnings, highlights */
+            --light-orange: #FFEDD5; /* Lighter shade of orange */
+            --pink-color: #EC4899;  /* For AI feature accent */
           }
 
           body {
             margin: 0;
             font-family: 'Inter', sans-serif;
-            background-color: #F9FAFB;
-            color: var(--text-color-dark);
+            background-color: var(--dark-background-primary); /* Primary dark background */
+            color: var(--dark-text-primary); /* Primary text white */
             -webkit-font-smoothing: antialiased;
-            -moz-osx-font-smoothing: grayscale;
+            -moz-osx-osx-font-smoothing: grayscale;
           }
 
           .app-container {
@@ -551,152 +754,158 @@ const App = () => {
             display: flex;
             flex-direction: column;
             align-items: center;
-            padding: 1.5rem; /* p-4 sm:p-6 lg:p-8 */
+            padding: 1.5rem; 
+            background-color: var(--dark-background-primary); /* Consistent primary background */
           }
 
           .header-section {
             width: 100%;
-            max-width: 960px; /* max-w-4xl */
+            max-width: 960px; 
             text-align: center;
-            margin-bottom: 2.5rem; /* mb-10 */
-            margin-top: 1rem; /* mt-4 */
+            margin-bottom: 2.5rem; 
+            margin-top: 1rem; 
           }
 
           .main-title {
-            font-size: 2.25rem; /* text-4xl */
-            line-height: 1.25; /* leading-tight */
-            font-weight: 800; /* font-extrabold */
-            color: var(--dark-blue); /* text-blue-800 */
-            margin-bottom: 1rem; /* mb-4 */
-            border-radius: 0.5rem; /* rounded-lg */
-            padding: 0.5rem; /* p-2 */
+            font-size: 2.25rem; 
+            line-height: 1.25; 
+            font-weight: 800; 
+            color: var(--true-blue); /* Main title in True Blue for contrast */
+            margin-bottom: 1rem; 
+            border-radius: 0.5rem; 
+            padding: 0.5rem; 
           }
 
           .subtitle {
-            font-size: 1.25rem; /* text-xl */
-            color: var(--text-color-medium); /* text-gray-600 */
+            font-size: 1.25rem; 
+            color: var(--dark-text-secondary); /* Secondary text on dark background */
           }
 
-          @media (min-width: 640px) { /* sm breakpoint */
+          @media (min-width: 640px) { 
             .main-title {
-              font-size: 3rem; /* sm:text-5xl */
+              font-size: 3rem; 
             }
             .subtitle {
-              font-size: 1.5rem; /* sm:text-2xl */
+              font-size: 1.5rem; 
             }
             .app-container {
-                padding: 1.5rem 2.5rem; /* sm:p-6 */
+                padding: 1.5rem 2.5rem; 
             }
           }
 
-          @media (min-width: 1024px) { /* lg breakpoint */
+          @media (min-width: 1024px) { 
             .app-container {
-                padding: 2rem 3rem; /* lg:p-8 */
+                padding: 2rem 3rem; 
             }
           }
 
           .nav-bar {
             display: flex;
-            flex-wrap: wrap;
+            flex-wrap: nowrap; /* Ensure tabs stay on one line */
+            overflow-x: auto; /* Allow horizontal scrolling on small screens if necessary */
             justify-content: center;
-            gap: 0.75rem; /* gap-3 */
-            margin-bottom: 2.5rem; /* mb-10 */
+            gap: 0.75rem; 
+            margin-bottom: 2.5rem; 
             width: 100%;
-            max-width: 960px; /* max-w-4xl */
+            max-width: 960px; 
+            padding-bottom: 0.5rem; /* Add padding for scrollbar on small screens */
           }
 
-          @media (min-width: 640px) { /* sm breakpoint */
+          @media (min-width: 640px) { 
             .nav-bar {
-              gap: 1rem; /* sm:gap-4 */
+              gap: 1rem; 
+              overflow-x: visible; /* Disable scroll on larger screens */
             }
           }
 
           .nav-button {
-            padding: 0.5rem 1rem; /* px-4 py-2 */
-            font-size: 1.125rem; /* text-lg */
-            font-weight: 600; /* font-semibold */
-            border-radius: 0.5rem; /* rounded-lg */
-            transition: all 0.3s ease-in-out; /* transition-all duration-300 */
-            background-color: #E5E7EB; /* bg-gray-200 */
-            color: var(--text-color-dark); /* text-gray-700 */
+            flex-shrink: 0; /* Prevent buttons from shrinking */
+            padding: 0.5rem 1rem; 
+            font-size: 1.125rem; 
+            font-weight: 600; 
+            border-radius: 0.5rem; 
+            transition: all 0.3s ease-in-out; 
+            background-color: var(--midnight-blue); /* Dark background for inactive buttons */
+            color: var(--dark-text-primary); /* White text for inactive buttons */
             border: none;
             cursor: pointer;
           }
 
           .nav-button:hover {
-            background-color: var(--light-blue); /* hover:bg-blue-100 */
+            background-color: var(--darker-true-blue); /* Darker True Blue on hover */
+            color: var(--white);
           }
 
           .nav-button-active {
-            background-color: var(--medium-blue); /* bg-blue-600 */
-            color: white; /* text-white */
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* shadow-lg */
+            background-color: var(--true-blue); /* True Blue when active */
+            color: var(--white); /* White text */
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2); /* Stronger shadow on dark theme */
           }
 
           .main-content {
             width: 100%;
-            max-width: 960px; /* max-w-4xl */
-            background-color: white; /* bg-white */
-            padding: 1.5rem; /* p-6 */
-            border-radius: 0.75rem; /* rounded-xl */
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05); /* shadow-lg */
-            border: 1px solid #F3F4F6; /* border border-gray-100 */
+            max-width: 960px; 
+            background-color: var(--dark-card-background); /* Midnight Blue for content areas */
+            padding: 1.5rem; 
+            border-radius: 0.75rem; 
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.2), 0 4px 6px -2px rgba(0, 0, 0, 0.1); /* Stronger shadow */
+            border: 1px solid rgba(255, 255, 255, 0.1); /* Subtle light border for definition */
           }
 
-          @media (min-width: 640px) { /* sm breakpoint */
+          @media (min-width: 640px) { 
             .main-content {
-              padding: 2rem; /* sm:p-8 */
+              padding: 2rem; 
             }
           }
 
           .content-section {
-            animation: fadeIn 0.5s ease-out; /* animate-fade-in */
+            animation: fadeIn 0.5s ease-out; 
           }
 
           .section-heading {
-            font-size: 1.875rem; /* text-3xl */
-            font-weight: 700; /* font-bold */
-            color: var(--text-color-dark); /* text-gray-900 */
-            margin-bottom: 1rem; /* mb-4 */
+            font-size: 1.875rem; 
+            font-weight: 700; 
+            color: var(--dark-text-primary); /* White for headings */
+            margin-bottom: 1rem; 
             display: flex;
             align-items: center;
           }
 
           .section-icon {
-            width: 2rem; /* w-8 */
-            height: 2rem; /* h-8 */
-            margin-right: 0.75rem; /* mr-3 */
+            width: 2rem; 
+            height: 2rem; 
+            margin-right: 0.75rem; 
           }
 
-          .challenge-heading .section-icon { color: var(--red-color); } /* text-red-500 */
-          .solution-heading .section-icon { color: var(--green-color); } /* text-green-500 */
-          .benefits-heading .section-icon { color: var(--purple-color); } /* text-purple-500 */
-          .pricing-heading .section-icon { color: var(--dark-blue); } /* text-indigo-500 */
-          .expectations-heading .section-icon { color: var(--orange-color); } /* text-orange-500 */
-          .llm-heading .section-icon { color: var(--pink-color); } /* text-pink-500 */
+          .challenge-heading .section-icon { color: var(--red-color); } 
+          .solution-heading .section-icon { color: var(--green-color); } 
+          .benefits-heading .section-icon { color: var(--indigo-purple); } 
+          .pricing-heading .section-icon { color: var(--true-blue); } 
+          .expectations-heading .section-icon { color: var(--orange-color); } 
+          .llm-heading .section-icon { color: var(--pink-color); } 
 
           .section-text {
-            font-size: 1.125rem; /* text-lg */
-            color: var(--text-color-medium); /* text-gray-700 */
-            line-height: 1.6; /* leading-relaxed */
-            margin-bottom: 1rem; /* mb-4 */
+            font-size: 1.125rem; 
+            color: var(--dark-text-secondary); /* Now very light gray */
+            line-height: 1.6; 
+            margin-bottom: 1rem; 
           }
 
           .bullet-list {
             list-style-type: disc;
-            padding-left: 1.25rem; /* pl-5 */
-            color: var(--text-color-medium); /* text-gray-700 */
-            line-height: 1.5; /* space-y-2 */
+            padding-left: 1.25rem; 
+            color: var(--dark-text-secondary); /* Now very light gray */
+            line-height: 1.5; 
           }
           .bullet-list li {
             margin-bottom: 0.5rem;
           }
 
           .sub-heading {
-            font-size: 1.25rem; /* text-xl */
-            font-weight: 600; /* font-semibold */
-            color: var(--text-color-dark); /* text-gray-800 */
-            margin-bottom: 0.75rem; /* mb-3 */
+            font-size: 1.25rem; 
+            font-weight: 600; 
+            color: var(--dark-text-primary); /* White for subheadings */
+            margin-bottom: 0.75rem; 
           }
 
           .icon-list {
@@ -705,7 +914,7 @@ const App = () => {
             margin: 0;
             display: flex;
             flex-direction: column;
-            gap: 1rem; /* space-y-4 */
+            gap: 1rem; 
           }
 
           .icon-list li {
@@ -714,69 +923,68 @@ const App = () => {
           }
 
           .list-icon {
-            width: 1.5rem; /* w-6 */
-            height: 1.5rem; /* h-6 */
-            margin-right: 0.75rem; /* mr-3 */
-            color: var(--primary-blue); /* text-blue-500 */
+            width: 1.5rem; 
+            height: 1.5rem; 
+            margin-right: 0.75rem; 
+            color: var(--true-blue); /* True Blue for general icons */
             flex-shrink: 0;
-            margin-top: 0.25rem; /* mt-1 */
+            margin-top: 0.25rem; 
           }
           .purple-icon {
-            color: var(--purple-color); /* text-purple-600 */
+            color: var(--indigo-purple); /* Indigo Purple for specific benefit icons */
           }
 
           .list-item-strong {
-            color: var(--text-color-dark); /* text-gray-900 */
+            color: var(--dark-text-primary); /* White for strong text */
             font-weight: 700;
           }
 
           .card-container {
             display: flex;
             flex-direction: column;
-            gap: 1.5rem; /* space-y-6 */
+            gap: 1.5rem; 
           }
 
           .info-card {
-            padding: 1.5rem; /* p-6 */
-            border-radius: 0.5rem; /* rounded-lg */
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* shadow-md */
-            border-left-width: 0.25rem; /* border-l-4 */
+            padding: 1.5rem; 
+            border-radius: 0.5rem; 
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); 
+            border-left-width: 0.25rem; 
+            background-color: var(--dark-card-background); /* Midnight Blue for info cards */
+            border-color: rgba(255, 255, 255, 0.1); /* Subtle light border */
           }
 
           .blue-card {
-            background-color: var(--light-blue); /* bg-blue-50 */
-            border-left-color: var(--primary-blue); /* border-blue-600 */
+            border-left-color: var(--true-blue); /* True Blue border */
           }
 
           .green-card {
-            background-color: #ECFDF5; /* bg-green-50 */
-            border-left-color: var(--green-color); /* border-green-600 */
+            border-left-color: var(--green-color); /* Green border */
           }
 
           .orange-card {
-            background-color: var(--light-orange); /* bg-orange-50 */
-            border-left-color: var(--orange-color); /* border-orange-600 */
+            border-left-color: var(--orange-color); /* Orange border */
           }
 
           .card-title {
-            font-size: 1.5rem; /* text-2xl */
-            font-weight: 700; /* font-bold */
-            color: var(--dark-blue); /* text-blue-800 */
-            margin-bottom: 0.5rem; /* mb-2 */
+            font-size: 1.5rem; 
+            font-weight: 700; 
+            color: var(--dark-text-primary); /* White for card titles */
+            margin-bottom: 0.5rem; 
             display: flex;
             align-items: center;
           }
 
           .card-title.card-title-icon {
-            color: var(--orange-color); /* text-orange-800 */
+            color: var(--orange-color); 
           }
 
           .card-bullet {
-            margin-right: 0.5rem; /* mr-2 */
-            font-size: 1.5rem; /* For visibility of the bullet */
+            margin-right: 0.5rem; 
+            font-size: 1.5rem; 
           }
-          .blue-bullet { color: var(--primary-blue); } /* text-blue-600 */
-          .green-bullet { color: var(--green-color); } /* text-green-600 */
+          .blue-bullet { color: var(--true-blue); } 
+          .green-bullet { color: var(--green-color); } 
 
           .card-icon {
             width: 1.5rem;
@@ -785,321 +993,252 @@ const App = () => {
             color: var(--orange-color);
           }
 
-
           .card-text {
-            font-size: 1.125rem; /* text-lg */
-            color: var(--text-color-medium); /* text-gray-700 */
-            margin-bottom: 0.75rem; /* mb-3 */
+            font-size: 1.125rem; 
+            color: var(--dark-text-secondary); /* Now very light gray */
+            margin-bottom: 0.75rem; 
           }
 
           .card-price {
-            font-size: 1.25rem; /* text-xl */
-            font-weight: 600; /* font-semibold */
-            color: var(--primary-blue); /* text-blue-700 */
+            font-size: 1.25rem; 
+            font-weight: 600; 
+            color: var(--true-blue); /* True Blue for prices */
           }
 
           .card-price-value {
-            font-size: 1.875rem; /* text-3xl */
-            font-weight: 800; /* font-extrabold */
+            font-size: 1.875rem; 
+            font-weight: 800; 
           }
 
           .card-note {
-            font-size: 0.875rem; /* text-sm */
-            color: var(--text-color-light); /* text-gray-500 */
-            margin-top: 0.5rem; /* mt-2 */
+            font-size: 0.875rem; 
+            color: var(--dark-text-tertiary); /* Now brighter gray */
+            margin-top: 0.5rem; 
           }
 
           .form-group-container {
-            margin-bottom: 1.5rem; /* mb-6 */
+            margin-bottom: 1.5rem; 
             display: flex;
             flex-direction: column;
-            gap: 1rem; /* space-y-4 */
+            gap: 1rem; 
           }
 
           .form-group {
-            margin-bottom: 1rem; /* mb-4 removed from parent, added here for consistency */
+            margin-bottom: 1rem; 
           }
 
           .form-label {
             display: block;
-            color: var(--text-color-dark); /* text-gray-700 */
-            font-size: 0.875rem; /* text-sm */
-            font-weight: 700; /* font-bold */
-            margin-bottom: 0.5rem; /* mb-2 */
+            color: var(--dark-text-secondary); /* Now very light gray */
+            font-size: 0.875rem; 
+            font-weight: 700; 
+            margin-bottom: 0.5rem; 
           }
 
           .form-input, .form-textarea {
-            box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05); /* shadow */
+            box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05); 
             appearance: none;
-            border: 1px solid #D1D5DB; /* border */
-            border-radius: 0.5rem; /* rounded-lg */
+            border: 1px solid rgba(255, 255, 255, 0.2); 
+            border-radius: 0.5rem; 
             width: 100%;
-            padding: 0.5rem 0.75rem; /* py-2 px-3 */
-            color: var(--text-color-dark); /* text-gray-700 */
-            line-height: 1.25; /* leading-tight */
+            padding: 0.5rem 0.75rem; 
+            background-color: rgba(255, 255, 255, 0.05); 
+            color: var(--dark-text-primary); 
+            line-height: 1.25; 
             outline: none;
             transition: all 0.2s ease-in-out;
-            resize: vertical; /* Only allow vertical resize for textarea */
+            resize: vertical; 
           }
 
           .form-input:focus, .form-textarea:focus {
-            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.3); /* focus:shadow-outline */
-            border-color: var(--primary-blue); /* focus:border-blue-500 */
+            box-shadow: 0 0 0 3px rgba(26, 125, 255, 0.3); 
+            border-color: var(--true-blue); 
           }
 
           .action-button {
-            background-color: var(--purple-color); /* bg-purple-600 */
-            color: white; /* text-white */
-            font-weight: 700; /* font-bold */
-            padding: 0.75rem 1.5rem; /* py-3 px-6 */
-            border-radius: 9999px; /* rounded-full */
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05); /* shadow-lg */
-            transition: all 0.3s ease-in-out; /* transition-all duration-300 */
+            background-color: var(--indigo-purple); 
+            color: var(--white); 
+            font-weight: 700; 
+            padding: 0.75rem 1.5rem; 
+            border-radius: 9999px; 
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.2), 0 4px 6px -2px rgba(0, 0, 0, 0.1); 
+            transition: all 0.3s ease-in-out; 
             border: none;
             cursor: pointer;
-            display: inline-block; /* to apply text-align and margin auto */
+            display: inline-block; 
             margin-top: 1rem;
           }
 
           .action-button:hover {
-            background-color: var(--dark-purple); /* hover:bg-purple-700 */
-            transform: scale(1.05); /* transform hover:scale-105 */
+            background-color: #3b0066; 
+            transform: scale(1.05); 
           }
 
           .action-button:disabled {
-            opacity: 0.5; /* disabled:opacity-50 */
-            cursor: not-allowed; /* disabled:cursor-not-allowed */
+            opacity: 0.5; 
+            cursor: not-allowed; 
             transform: none;
           }
 
           .error-message {
-            background-color: #FEE2E2; /* bg-red-100 */
-            border: 1px solid #FCA5A5; /* border border-red-400 */
-            color: #B91C1C; /* text-red-700 */
-            padding: 0.75rem 1rem; /* px-4 py-3 */
-            border-radius: 0.5rem; /* rounded-lg */
+            background-color: #440000; 
+            border: 1px solid #FF0000; 
+            color: #FFCCCC; 
+            padding: 0.75rem 1rem; 
+            border-radius: 0.5rem; 
             position: relative;
-            margin-bottom: 1rem; /* mb-4 */
+            margin-bottom: 1rem; 
           }
 
           .error-strong {
-            font-weight: 700; /* font-bold */
+            font-weight: 700; 
           }
 
           .error-text {
-            display: block; /* block */
-            margin-left: 0.5rem; /* sm:inline ml-2 */
+            display: block; 
+            margin-left: 0.5rem; 
           }
 
-          @media (min-width: 640px) { /* sm breakpoint */
+          @media (min-width: 640px) { 
             .error-text {
               display: inline;
             }
           }
 
           .draft-output-box {
-            background-color: #EFF6FF; /* bg-blue-50 */
-            border: 1px solid #BFDBFE; /* border border-blue-200 */
-            color: var(--dark-blue); /* text-blue-800 */
-            padding: 1.5rem; /* p-6 */
-            border-radius: 0.5rem; /* rounded-lg */
+            background-color: var(--midnight-blue); 
+            border: 1px solid var(--true-blue); 
+            color: var(--dark-text-primary); 
+            padding: 1.5rem; 
+            border-radius: 0.5rem; 
             position: relative;
-            margin-top: 1.5rem; /* mt-6 */
+            margin-top: 1.5rem; 
           }
 
           .draft-title {
-            font-size: 1.25rem; /* text-xl */
-            font-weight: 700; /* font-bold */
-            margin-bottom: 0.75rem; /* mb-3 */
+            font-size: 1.25rem; 
+            font-weight: 700; 
+            margin-bottom: 0.75rem; 
           }
 
           .draft-text {
-            white-space: pre-wrap; /* whitespace-pre-wrap */
-            line-height: 1.6; /* leading-relaxed */
+            white-space: pre-wrap; 
+            line-height: 1.6; 
           }
 
           .copy-button {
-            margin-top: 1rem; /* mt-4 */
-            background-color: var(--medium-blue); /* bg-blue-500 */
-            color: white; /* text-white */
-            font-weight: 700; /* font-bold */
-            padding: 0.5rem 1rem; /* py-2 px-4 */
-            border-radius: 9999px; /* rounded-full */
-            font-size: 0.875rem; /* text-sm */
-            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06); /* shadow */
-            transition: all 0.3s ease-in-out; /* transition-all duration-300 */
+            margin-top: 1rem; 
+            background-color: var(--true-blue); 
+            color: var(--white); 
+            font-weight: 700; 
+            padding: 0.5rem 1rem; 
+            border-radius: 9999px; 
+            font-size: 0.875rem; 
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06); 
+            transition: all 0.3s ease-in-out; 
             border: none;
             cursor: pointer;
           }
 
           .copy-button:hover {
-            background-color: var(--primary-blue); /* hover:bg-blue-600 */
-          }
-
-          .footer-section {
-            width: 100%;
-            max-width: 960px; /* max-w-4xl */
-            text-align: center;
-            margin-top: 2.5rem; /* mt-10 */
-            padding: 1.5rem; /* p-6 */
-            background-color: var(--primary-blue); /* bg-blue-700 */
-            color: white; /* text-white */
-            border-radius: 0.75rem; /* rounded-xl */
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05); /* shadow-lg */
-          }
-
-          .footer-title {
-            font-size: 1.875rem; /* text-3xl */
-            font-weight: 700; /* font-bold */
-            margin-bottom: 1rem; /* mb-4 */
-          }
-
-          @media (min-width: 640px) { /* sm breakpoint */
-            .footer-title {
-              font-size: 2.25rem; /* sm:text-4xl */
-            }
-          }
-
-          .footer-text {
-            font-size: 1.125rem; /* text-lg */
-            margin-bottom: 1.5rem; /* mb-6 */
-          }
-
-          @media (min-width: 640px) { /* sm breakpoint */
-            .footer-text {
-              font-size: 1.25rem; /* sm:text-xl */
-            }
-          }
-
-          .contact-buttons-container {
-            display: flex;
-            flex-direction: column; /* flex-col */
-            justify-content: center;
-            gap: 1rem; /* space-y-4 */
-          }
-
-          @media (min-width: 640px) { /* sm breakpoint */
-            .contact-buttons-container {
-              flex-direction: row; /* sm:flex-row */
-              gap: 1rem; /* sm:space-x-4 */
-              margin-left: 0; /* Resetting space-y-0 equivalent */
-            }
-          }
-
-          .contact-button {
-            display: inline-block; /* inline-block */
-            font-weight: 700; /* font-bold */
-            padding: 0.75rem 2rem; /* py-3 px-8 */
-            border-radius: 9999px; /* rounded-full */
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* shadow-lg */
-            transition: all 0.3s ease-in-out; /* transition-all duration-300 */
-            text-decoration: none; /* remove underline for links */
-            transform: scale(1); /* Ensure initial scale is 1 */
-            border: none;
-            cursor: pointer;
-          }
-
-          .contact-button:hover {
-            transform: scale(1.05); /* transform hover:scale-105 */
-          }
-
-          .white-button {
-            background-color: white; /* bg-white */
-            color: var(--primary-blue); /* text-blue-700 */
-          }
-
-          .white-button:hover {
-            background-color: var(--light-blue); /* hover:bg-blue-100 */
-          }
-
-          .blue-button {
-            background-color: var(--medium-blue); /* bg-blue-500 */
-            color: white; /* text-white */
-          }
-
-          .blue-button:hover {
-            background-color: var(--primary-blue); /* hover:bg-blue-600 */
-          }
-
-          .footer-info {
-            font-size: 0.875rem; /* text-sm */
-            margin-top: 1.5rem; /* mt-6 */
-          }
-
-          /* Animations */
-          @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
+            background-color: var(--darker-true-blue); 
           }
 
           /* ROI Section Specific Styles */
           .roi-card {
-            background-color: #F8FAFC; /* Light gray background */
-            border: 1px solid #E2E8F0; /* Light border */
-            border-radius: 0.75rem; /* Rounded corners */
-            padding: 1.5rem; /* Padding */
+            background-color: var(--midnight-blue); 
+            border: 1px solid rgba(255, 255, 255, 0.1); 
+            border-radius: 0.75rem; 
+            padding: 1.5rem; 
             display: flex;
             flex-direction: column;
             gap: 1.5rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2); 
           }
 
           .roi-item {
-            background-color: #FFFFFF; /* White background for each item */
-            border: 1px solid #E2E8F0; /* Light border */
-            border-radius: 0.5rem; /* Rounded corners */
-            padding: 1rem; /* Padding */
+            background-color: rgba(255, 255, 255, 0.05); 
+            border: 1px solid rgba(255, 255, 255, 0.1); 
+            border-radius: 0.5rem; 
+            padding: 1rem; 
           }
 
           .roi-label {
-            font-size: 1.125rem; /* text-lg */
-            font-weight: 700; /* font-bold */
-            color: var(--dark-blue); /* Darker text */
+            font-size: 1.125rem; 
+            font-weight: 700; 
+            color: var(--true-blue); 
             margin-bottom: 0.5rem;
             display: block;
           }
 
+          .roi-sub-label {
+            font-size: 0.95rem;
+            color: var(--dark-text-secondary); 
+            margin-bottom: 0.75rem;
+            font-style: italic;
+          }
+
           .roi-list {
-            list-style: none; /* No bullets */
+            list-style: none; 
             padding: 0;
             margin: 0;
             line-height: 1.6;
-            color: var(--text-color-medium);
+            color: var(--dark-text-secondary); 
           }
 
           .roi-list li strong {
-            color: var(--text-color-dark);
+            color: var(--dark-text-primary); 
+          }
+
+          .roi-list .nested-li {
+            font-size: 0.9rem;
+            color: var(--dark-text-tertiary); 
+            margin-left: 1.25rem;
+            margin-top: 0.25rem;
+            margin-bottom: 0.25rem;
+          }
+          .roi-list .nested-li small {
+            font-style: italic;
+          }
+
+          .roi-list .summary-line {
+            font-weight: 700;
+            color: var(--true-blue); 
+            margin-top: 0.75rem;
+            border-top: 1px dashed rgba(255, 255, 255, 0.2); 
+            padding-top: 0.5rem;
           }
 
           .final-roi {
-            background-color: #ECFDF5; /* Light green background */
-            border-color: var(--green-color); /* Green border */
+            background-color: rgba(16, 185, 129, 0.15); 
+            border-color: var(--green-color); 
             font-weight: 700;
           }
 
           .final-roi .roi-label {
-            color: var(--green-color); /* Green text */
+            color: var(--green-color); 
             font-size: 1.25rem;
           }
 
           .roi-disclaimer {
             font-size: 0.875rem;
-            color: var(--text-color-light);
+            color: var(--dark-text-tertiary); 
             margin-top: 1rem;
             font-style: italic;
           }
 
-          @media (min-width: 768px) { /* md breakpoint */
+          @media (min-width: 768px) { 
             .roi-card {
               flex-direction: row;
               flex-wrap: wrap;
               justify-content: space-between;
             }
             .roi-item {
-              flex: 1 1 calc(50% - 0.75rem); /* Two columns on larger screens */
+              flex: 1 1 calc(50% - 0.75rem); 
               max-width: calc(50% - 0.75rem);
             }
             .final-roi {
-              flex: 1 1 100%; /* Full width for the final ROI */
+              flex: 1 1 100%; 
               max-width: 100%;
             }
           }
