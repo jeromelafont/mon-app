@@ -179,15 +179,19 @@ const App = () => {
               <svg className="section-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
               </svg>
-              Your Immediate Added Value:
+              Your Immediate Added Value: A Partnership for Growth
             </h2>
+            <p className="section-text">
+              While Marketparts already has experience with your clients, this **new partnership model** offers a deeper, more integrated approach that unlocks significant benefits directly for your business. We move beyond simple management to becoming a strategic extension of your brand.
+            </p>
             <ul className="icon-list">
               <li>
                 <svg className="list-icon purple-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path>
                 </svg>
                 <div>
-                  <strong className="list-item-strong">Accelerated Customer Loyalty:</strong> Even when issues arise, your responsiveness makes all the difference. Your clients will feel heard and supported, strengthening their loyalty and trust in your brand.
+                  <strong className="list-item-strong">Accelerated Customer Loyalty & Brand Reinforcement:</strong>
+                  Even when issues arise, your responsiveness makes all the difference. By acting **in your name and under your brand guidelines**, we ensure seamless, consistent, and empathetic communication. This transforms a potential frustration into a positive brand touchpoint, directly impacting repeat business, word-of-mouth referrals, and strengthening long-term client relationships. Your brand's reputation for reliability is actively enhanced, not just preserved.
                 </div>
               </li>
               <li>
@@ -195,7 +199,8 @@ const App = () => {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2"></path>
                 </svg>
                 <div>
-                  <strong className="list-item-strong">Freed-Up Teams:</strong> Liberate your sales, logistics, and after-sales teams from time-consuming and often frustrating stock-out management tasks. They can now focus on your core business and high-value activities.
+                  <strong className="list-item-strong">Significant Resource Liberation & Strategic Focus:</strong>
+                  Liberate your sales, logistics, and after-sales teams from the time-consuming, often stressful, and reactive tasks of stock-out management. This isn't just about offloading work; it's about enabling your most valuable talent to focus on core business activities, strategic growth initiatives, product innovation, and expanding market share.
                 </div>
               </li>
               <li>
@@ -203,18 +208,62 @@ const App = () => {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
                 </svg>
                 <div>
-                  <strong className="list-item-strong">Reduced Hidden Costs:</strong> Minimize penalties, order cancellations, returns, and the time spent handling complaints, thanks to our proactive and efficient management.
-                </div>
-              </li>
-              <li>
-                <svg className="list-icon purple-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                </svg>
-                <div>
-                  <strong className="list-item-strong">Enhanced Brand Image:</strong> Your company will be perceived as a reliable, foresightful, and customer-centric partner, even when facing unexpected challenges.
+                  <strong className="list-item-strong">Tangible Reduction in Hidden Costs & Revenue Protection:</strong>
+                  Proactive management directly minimizes financial drains. This includes fewer order cancellations, reduced logistical penalties, less time spent on dispute resolution, and crucially, prevention of lost future orders due to a negative customer experience. By efficiently managing affected sales, we actively protect and recover your potential revenue.
                 </div>
               </li>
             </ul>
+
+            <h3 className="sub-heading mt-8">Illustrative Return on Investment (ROI)</h3>
+            <p className="section-text">
+              Let's illustrate the potential financial impact of partnering with Marketparts, based on typical scenarios:
+            </p>
+
+            <div className="roi-card">
+              <div className="roi-item">
+                <span className="roi-label">Hypothèses Mensuelles</span>
+                <ul className="roi-list">
+                  <li>Nombre moyen de cas de rupture : **50**</li>
+                  <li>Valeur moyenne d'une commande impactée : **€1,000**</li>
+                  <li>Taux de commandes sauvées (non annulées) : **60%**</li>
+                  <li>Temps interne économisé par cas : **2 heures**</li>
+                  <li>Coût horaire moyen équipe interne : **€40**</li>
+                  <li>Frais Fixe Marketparts (hypothétique) : **€3,000**</li>
+                  <li>Incentive Marketparts : **5%** du CA HT géré</li>
+                </ul>
+              </div>
+              <div className="roi-item">
+                <span className="roi-label">Calcul des Bénéfices</span>
+                <ul className="roi-list">
+                  <li>Chiffre d'Affaires HT Géré : 50 cas * €1,000 = **€50,000**</li>
+                  <li>Revenus Sauvés : €50,000 * 60% = **€30,000**</li>
+                  <li>Heures Économisées : 50 cas * 2h = **100 heures**</li>
+                  <li>Économies sur Coûts Équipe : 100h * €40 = **€4,000**</li>
+                  <li>**Bénéfices Totaux Mensuels : €30,000 + €4,000 = €34,000**</li>
+                </ul>
+              </div>
+              <div className="roi-item">
+                <span className="roi-label">Coût Marketparts</span>
+                <ul className="roi-list">
+                  <li>Coût Fixe Mensuel : **€3,000**</li>
+                  <li>Incentive (5% de €50,000) : **€2,500**</li>
+                  <li>**Coût Total Marketparts Mensuel : €3,000 + €2,500 = €5,500**</li>
+                </ul>
+              </div>
+              <div className="roi-item final-roi">
+                <span className="roi-label">Résultat et ROI Estimé</span>
+                <ul className="roi-list">
+                  <li>Gain Net Mensuel : €34,000 - €5,500 = **€28,500**</li>
+                  <li>**ROI Estimé : (€28,500 / €5,500) * 100% ≈ 518%**</li>
+                </ul>
+                <p className="roi-disclaimer">
+                  *Cet exemple est illustratif. Votre ROI réel dépendra de vos volumes, valeurs de commande et de nos accords spécifiques.*
+                </p>
+              </div>
+            </div>
+            <p className="section-text mt-6">
+              By working hand-in-hand, we can ensure that every stock-out is managed with maximum efficiency, transparency, and care, turning potential frustration into a testament to your customer commitment.
+            </p>
           </section>
         )}
 
@@ -981,6 +1030,78 @@ const App = () => {
           @keyframes fadeIn {
             from { opacity: 0; transform: translateY(10px); }
             to { opacity: 1; transform: translateY(0); }
+          }
+
+          /* ROI Section Specific Styles */
+          .roi-card {
+            background-color: #F8FAFC; /* Light gray background */
+            border: 1px solid #E2E8F0; /* Light border */
+            border-radius: 0.75rem; /* Rounded corners */
+            padding: 1.5rem; /* Padding */
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+          }
+
+          .roi-item {
+            background-color: #FFFFFF; /* White background for each item */
+            border: 1px solid #E2E8F0; /* Light border */
+            border-radius: 0.5rem; /* Rounded corners */
+            padding: 1rem; /* Padding */
+          }
+
+          .roi-label {
+            font-size: 1.125rem; /* text-lg */
+            font-weight: 700; /* font-bold */
+            color: var(--dark-blue); /* Darker text */
+            margin-bottom: 0.5rem;
+            display: block;
+          }
+
+          .roi-list {
+            list-style: none; /* No bullets */
+            padding: 0;
+            margin: 0;
+            line-height: 1.6;
+            color: var(--text-color-medium);
+          }
+
+          .roi-list li strong {
+            color: var(--text-color-dark);
+          }
+
+          .final-roi {
+            background-color: #ECFDF5; /* Light green background */
+            border-color: var(--green-color); /* Green border */
+            font-weight: 700;
+          }
+
+          .final-roi .roi-label {
+            color: var(--green-color); /* Green text */
+            font-size: 1.25rem;
+          }
+
+          .roi-disclaimer {
+            font-size: 0.875rem;
+            color: var(--text-color-light);
+            margin-top: 1rem;
+            font-style: italic;
+          }
+
+          @media (min-width: 768px) { /* md breakpoint */
+            .roi-card {
+              flex-direction: row;
+              flex-wrap: wrap;
+              justify-content: space-between;
+            }
+            .roi-item {
+              flex: 1 1 calc(50% - 0.75rem); /* Two columns on larger screens */
+              max-width: calc(50% - 0.75rem);
+            }
+            .final-roi {
+              flex: 1 1 100%; /* Full width for the final ROI */
+              max-width: 100%;
+            }
           }
         `}
       </style>
