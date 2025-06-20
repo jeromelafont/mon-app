@@ -1134,18 +1134,24 @@
             const [isAuthenticated, setIsAuthenticated] = useState(false);
             const [passwordError, setPasswordError] = useState('');
 
-            const CORRECT_PASSWORD = 'Marketparts';
+            // The password 'Marketparts' is encoded in Base64
+            const CORRECT_PASSWORD_ENCODED = 'TWFya2V0cGFydHM=';
 
             useEffect(() => {
                 document.title = 'Supply Continuity Promise';
             }, []);
 
             const handleLogin = (password) => {
-                if (password === CORRECT_PASSWORD) {
-                    setIsAuthenticated(true);
-                    setPasswordError('');
-                } else {
-                    setPasswordError('Incorrect password. Please try again.');
+                try {
+                    if (password === atob(CORRECT_PASSWORD_ENCODED)) {
+                        setIsAuthenticated(true);
+                        setPasswordError('');
+                    } else {
+                        setPasswordError('Incorrect password. Please try again.');
+                    }
+                } catch(e) {
+                    console.error("Error decoding password", e);
+                    setPasswordError('An error occurred during login.');
                 }
             };
             
