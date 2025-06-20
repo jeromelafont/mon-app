@@ -1,43 +1,1168 @@
 <!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <link rel="icon" href="%PUBLIC_URL%/favicon.ico" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="theme-color" content="#000000" />
-    <meta
-      name="description"
-      content="Web site created using create-react-app"
-    />
-    <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo192.png" />
-    <!--
-      manifest.json provides metadata used when your web app is installed on a
-      user's mobile device or desktop. See https://developers.google.com/web/fundamentals/web-app-manifest/
-    -->
-    <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
-    <!--
-      Notice the use of %PUBLIC_URL% in the tags above.
-      It will be replaced with the URL of the `public` folder during the build.
-      Only files inside the `public` folder can be referenced from the HTML.
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Supply Continuity Promise</title>
+    
+    <!-- Importation de React, ReactDOM et Babel pour la transpilation JSX -->
+    <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
+    <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
 
-      Unlike "/favicon.ico" or "favicon.ico", "%PUBLIC_URL%/favicon.ico" will
-      work correctly both with client-side routing and a non-root public URL.
-      Learn how to configure a non-root public URL by running `npm run build`.
-    -->
-    <title>React App</title>
-  </head>
-  <body>
-    <noscript>You need to enable JavaScript to run this app.</noscript>
+    <!-- Styles CSS de l'application -->
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap');
+
+        :root {
+          --midnight-blue: #002074;
+          --true-blue: #1a7dff;
+          --white: #ffffff;
+          --indigo-purple: #4b0082;
+          --dark-background-primary: #000000;
+          --dark-card-background: var(--midnight-blue);
+          --dark-text-primary: var(--white);
+          --dark-text-secondary: rgba(255, 255, 255, 0.95);
+          --dark-text-tertiary: rgba(255, 255, 255, 0.7);
+          --darker-true-blue: #0060d4;
+          --red-color: #EF4444;
+          --green-color: #10B981;
+          --orange-color: #F97316;
+        }
+
+        body {
+          margin: 0;
+          font-family: 'Inter', sans-serif;
+          background-color: var(--dark-background-primary);
+          color: var(--dark-text-primary);
+          -webkit-font-smoothing: antialiased;
+          -moz-osx-font-smoothing: grayscale;
+        }
+
+        /* Styles pour le logo */
+        .logo-img {
+          max-width: 250px;
+          height: auto;
+          margin-bottom: 1.5rem;
+        }
+
+        /* Styles pour la page de connexion */
+        .login-page-wrapper {
+            width: 100vw;
+            height: 100vh;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .background-video {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transform: translate(-50%, -50%);
+            z-index: 1;
+        }
+        .video-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            z-index: 2;
+        }
+
+        .login-container {
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          min-height: 100vh;
+          width: 100%;
+          padding: 1rem;
+          z-index: 3;
+        }
+        .login-box {
+          background: rgba(0, 20, 74, 0.6);
+          backdrop-filter: blur(10px);
+          -webkit-backdrop-filter: blur(10px);
+          padding: 2.5rem;
+          border-radius: 0.75rem;
+          box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+          text-align: center;
+          max-width: 400px;
+          width: 100%;
+          border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        .login-title {
+          font-size: 1.5rem;
+          font-weight: 600;
+          color: var(--white);
+          margin-top: 0;
+          margin-bottom: 1.5rem;
+        }
+        .login-input {
+          width: calc(100% - 20px);
+          padding: 0.75rem 10px;
+          margin-bottom: 1rem;
+          border-radius: 0.5rem;
+          border: 1px solid rgba(255, 255, 255, 0.3);
+          background-color: rgba(255, 255, 255, 0.1);
+          color: var(--white);
+          font-size: 1rem;
+        }
+        .login-input::placeholder { color: rgba(255, 255, 255, 0.6); }
+        .login-input:focus {
+          outline: none;
+          border-color: var(--true-blue);
+          box-shadow: 0 0 0 3px rgba(26, 125, 255, 0.3);
+        }
+        .login-button {
+          background-color: var(--true-blue);
+          color: var(--white);
+          padding: 0.75rem 1.5rem;
+          border-radius: 0.5rem;
+          border: none;
+          font-size: 1rem;
+          font-weight: 600;
+          cursor: pointer;
+          transition: background-color 0.3s ease, transform 0.2s ease;
+          width: 100%;
+        }
+        .login-button:hover {
+          background-color: #0060d4;
+          transform: translateY(-2px);
+        }
+        .login-error {
+          color: var(--red-color);
+          margin-top: 1rem;
+          font-size: 0.9rem;
+        }
+
+        /* Styles généraux de l'application */
+        .app-container {
+          min-height: 100vh;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          padding: 1.5rem;
+          box-sizing: border-box;
+        }
+        @media (min-width: 640px) { .app-container { padding: 1.5rem 2.5rem; } }
+        @media (min-width: 1024px) { .app-container { padding: 2rem 3rem; } }
+
+        /* Nouveaux styles pour l'en-tête principal */
+        .hero-header {
+            width: 100%;
+            max-width: 960px;
+            text-align: left;
+            margin-bottom: 2.5rem;
+            margin-top: 1rem;
+            padding: 1rem;
+        }
+        .hero-logo-img {
+            max-width: 250px;
+            margin-bottom: 1.5rem;
+        }
+        .hero-tag {
+            color: var(--true-blue);
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            display: block;
+        }
+        .hero-title {
+            font-size: 3rem;
+            line-height: 1.1;
+            font-weight: 800;
+            color: var(--white);
+            margin: 0;
+        }
+        .hero-subtitle {
+            font-size: 1.25rem;
+            color: var(--dark-text-secondary);
+            margin-top: 1rem;
+            max-width: 600px;
+        }
+        @media (min-width: 640px) {
+          .hero-title { font-size: 4rem; }
+          .hero-subtitle { font-size: 1.5rem; }
+        }
+
+        /* Barre de navigation principale (Catégories) */
+        .main-nav-bar {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+            width: 100%;
+            max-width: 960px;
+            border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+        }
+        .main-nav-button {
+            padding: 1rem 1.5rem;
+            font-size: 1.2rem;
+            font-weight: 700;
+            border-radius: 8px 8px 0 0;
+            transition: all 0.3s ease-in-out;
+            background-color: transparent;
+            color: var(--dark-text-tertiary);
+            border: none;
+            border-bottom: 4px solid transparent;
+            cursor: pointer;
+        }
+        .main-nav-button:hover {
+            background-color: rgba(255, 255, 255, 0.05);
+            color: var(--white);
+        }
+        .main-nav-button-active {
+            color: var(--true-blue);
+            border-bottom-color: var(--true-blue);
+        }
+
+        /* Barre de navigation secondaire (Sous-onglets) */
+        .sub-nav-bar {
+          display: flex;
+          flex-wrap: nowrap;
+          overflow-x: auto;
+          justify-content: flex-start;
+          gap: 0.75rem;
+          margin-bottom: 2.5rem;
+          width: 100%;
+          max-width: 960px;
+          padding-bottom: 0.5rem;
+        }
+        .sub-nav-button {
+          flex-shrink: 0;
+          padding: 0.5rem 1rem;
+          font-size: 1rem;
+          font-weight: 600;
+          border-radius: 0.5rem;
+          transition: all 0.3s ease-in-out;
+          background-color: var(--midnight-blue);
+          color: var(--dark-text-primary);
+          border: 1px solid rgba(26, 125, 255, 0.5);
+          cursor: pointer;
+        }
+        .sub-nav-button:hover {
+          background-color: var(--darker-true-blue);
+          border-color: var(--darker-true-blue);
+          color: var(--white);
+        }
+        .sub-nav-button-active {
+          background-color: var(--true-blue);
+          color: var(--white);
+          border-color: var(--true-blue);
+          box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Contenu principal */
+        .main-content {
+          width: 100%;
+          max-width: 960px;
+          background-color: var(--dark-card-background);
+          padding: 1.5rem;
+          border-radius: 0.75rem;
+          box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.2), 0 4px 6px -2px rgba(0, 0, 0, 0.1);
+          border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        @media (min-width: 640px) { .main-content { padding: 2rem; } }
+
+        .content-section {
+          animation: fadeIn 0.5s ease-out;
+        }
+        @keyframes fadeIn {
+          from { opacity: 0; transform: translateY(10px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
+        .section-heading {
+          font-size: 1.875rem;
+          font-weight: 700;
+          color: var(--dark-text-primary);
+          margin-bottom: 1.5rem;
+          display: flex;
+          align-items: center;
+          gap: 0.75rem;
+        }
+        .section-icon {
+          width: 2rem;
+          height: 2rem;
+          flex-shrink: 0;
+        }
+        .challenge-heading .section-icon { color: var(--red-color); }
+        .solution-heading .section-icon { color: var(--green-color); }
+        .benefits-heading .section-icon { color: var(--indigo-purple); }
+        .pricing-heading .section-icon { color: var(--true-blue); }
+        .expectations-heading .section-icon { color: var(--orange-color); }
+
+        .section-text {
+          font-size: 1.125rem;
+          color: var(--dark-text-secondary);
+          line-height: 1.6;
+          margin-bottom: 1.5rem;
+        }
+        .section-text strong {
+          color: var(--dark-text-primary);
+          font-weight: 700;
+        }
+        .sub-heading {
+          font-size: 1.25rem;
+          font-weight: 600;
+          color: var(--dark-text-primary);
+          margin: 1.5rem 0 0.75rem 0;
+        }
+        .bullet-list {
+          list-style-type: disc;
+          padding-left: 1.5rem;
+          color: var(--dark-text-secondary);
+          line-height: 1.6;
+        }
+        .bullet-list li { margin-bottom: 0.75rem; }
+
+        .icon-list {
+          list-style: none;
+          padding: 0;
+          margin: 0;
+          display: flex;
+          flex-direction: column;
+          gap: 1.5rem;
+        }
+        .icon-list li {
+          display: flex;
+          align-items: flex-start;
+          gap: 0.75rem;
+        }
+        .list-icon {
+          width: 1.5rem;
+          height: 1.5rem;
+          color: var(--true-blue);
+          flex-shrink: 0;
+          margin-top: 0.25rem;
+        }
+        .purple-icon { color: var(--indigo-purple); }
+        .list-item-strong {
+          color: var(--dark-text-primary);
+          font-weight: 700;
+        }
+        .card-container {
+          display: grid;
+          grid-template-columns: 1fr;
+          gap: 1.5rem;
+          margin-top: 1.5rem;
+        }
+        @media (min-width: 768px) { .card-container { grid-template-columns: 1fr 1fr; } }
+        .info-card {
+          padding: 1.5rem;
+          border-radius: 0.5rem;
+          box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+          border-left: 4px solid;
+          background-color: rgba(0,0,0,0.2);
+          display: flex;
+          flex-direction: column;
+        }
+        .blue-card { border-left-color: var(--true-blue); }
+        .green-card { border-left-color: var(--green-color); }
+        .orange-card { border-left-color: var(--orange-color); }
+        .card-title {
+          font-size: 1.25rem;
+          font-weight: 700;
+          color: var(--dark-text-primary);
+          margin: 0 0 0.75rem 0;
+          display: flex;
+          align-items: center;
+          gap: 0.5rem;
+        }
+        .card-title.card-title-icon { color: var(--orange-color); }
+        .card-icon { width: 1.5rem; height: 1.5rem; }
+        .card-text {
+          font-size: 1rem;
+          color: var(--dark-text-secondary);
+          margin-bottom: 1rem;
+          flex-grow: 1;
+        }
+        .card-price {
+          font-size: 1rem;
+          font-weight: 600;
+          color: var(--true-blue);
+        }
+        .card-price-value { font-size: 1.875rem; font-weight: 800; }
+        .card-note {
+          font-size: 0.875rem;
+          color: var(--dark-text-tertiary);
+          margin-top: 0.5rem;
+          font-style: italic;
+        }
+
+        /* Styles pour la section ROI */
+        .roi-card {
+          display: grid;
+          grid-template-columns: 1fr;
+          gap: 1.5rem;
+        }
+        @media (min-width: 1024px) {
+            .roi-card {
+                grid-template-columns: 1fr 1fr;
+            }
+            .roi-item.final-roi {
+                grid-column: 1 / -1; /* Span full width */
+            }
+        }
+        .roi-item {
+          background-color: rgba(255, 255, 255, 0.05);
+          border: 1px solid rgba(255, 255, 255, 0.1);
+          border-radius: 0.5rem;
+          padding: 1.5rem;
+        }
+        .roi-label {
+          font-size: 1.125rem;
+          font-weight: 700;
+          color: var(--true-blue);
+          margin-bottom: 0.5rem;
+          display: block;
+        }
+        .roi-sub-label {
+          font-size: 0.95rem;
+          color: var(--dark-text-secondary);
+          margin-bottom: 1rem;
+          font-style: italic;
+        }
+        .roi-list {
+          list-style: none;
+          padding: 0;
+          margin: 0;
+          line-height: 1.7;
+          color: var(--dark-text-secondary);
+          font-size: 1rem;
+        }
+        .roi-list li strong { color: var(--dark-text-primary); }
+        .roi-list .summary-line {
+          font-weight: 700;
+          font-size: 1.1rem;
+          margin-top: 1rem;
+          border-top: 1px solid rgba(255, 255, 255, 0.2);
+          padding-top: 1rem;
+        }
+        .red-line { color: var(--red-color); }
+        .blue-line { color: var(--true-blue); }
+        .green-line { color: var(--green-color); }
+        
+        .final-roi {
+          background: linear-gradient(45deg, rgba(16, 185, 129, 0.1), rgba(16, 185, 129, 0.2));
+          border-color: var(--green-color);
+        }
+        .final-roi .roi-label { color: var(--green-color); }
+        
+        .hidden-cost-section {
+          border: 1px solid var(--orange-color);
+          box-shadow: 0 4px 20px rgba(249, 115, 22, 0.2);
+          margin-top: 2rem;
+          padding: 1.5rem;
+          border-radius: 0.75rem;
+        }
+        .hidden-cost-title {
+          font-size: 1.75rem;
+          font-weight: 700;
+          color: var(--orange-color);
+          margin-bottom: 1rem;
+          text-align: center;
+        }
+        
+        /* Nouveaux styles pour le modèle de tarification */
+        .pricing-grid-3 {
+            grid-template-columns: 1fr;
+        }
+
+        @media (min-width: 1024px) {
+            .pricing-grid-3 {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+        
+        .pricing-list {
+            padding-left: 0;
+            list-style-type: none;
+        }
+        
+        .pricing-list li {
+            margin-bottom: 1rem;
+        }
+
+        /* Styles pour la section How To */
+        .timeline-container {
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            margin: 2rem 0;
+        }
+        .timeline-container::after {
+            content: '';
+            position: absolute;
+            width: 3px;
+            background-color: var(--true-blue);
+            top: 0;
+            bottom: 0;
+            left: 20px;
+            margin-left: -1.5px;
+        }
+        .timeline-item {
+            padding: 1rem 1rem 1rem 60px;
+            position: relative;
+            background-color: transparent;
+            width: 100%;
+        }
+        .timeline-dot {
+            content: '';
+            position: absolute;
+            width: 25px;
+            height: 25px;
+            right: auto;
+            left: 20px;
+            background-color: var(--dark-background-primary);
+            border: 3px solid var(--true-blue);
+            top: 24px;
+            border-radius: 50%;
+            transform: translateX(-50%);
+            z-index: 1;
+        }
+        .timeline-content {
+            padding: 20px;
+            background-color: rgba(26, 125, 255, 0.1);
+            border-radius: 8px;
+            border: 1px solid rgba(26, 125, 255, 0.3);
+        }
+        .timeline-title {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--true-blue);
+            margin: 0 0 0.5rem 0;
+        }
+        .timeline-text {
+            font-size: 1rem;
+            color: var(--dark-text-secondary);
+            line-height: 1.6;
+        }
+        
+        /* Styles pour le simulateur ROI */
+        .simulator-container {
+            background-color: rgba(26, 125, 255, 0.1);
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin-bottom: 2rem;
+            border: 1px solid rgba(26, 125, 255, 0.3);
+        }
+        .simulator-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+        .simulator-input {
+            width: 100%;
+            max-width: 400px;
+            padding: 0.75rem;
+            border-radius: 4px;
+            border: 1px solid var(--true-blue);
+            background-color: #000;
+            color: var(--white);
+            font-size: 1.2rem;
+            font-weight: 700;
+            text-align: right;
+        }
+    </style>
+</head>
+<body>
     <div id="root"></div>
-    <!--
-      This HTML file is a template.
-      If you open it directly in the browser, you will see an empty page.
 
-      You can add webfonts, meta tags, or analytics to this file.
-      The build step will place the bundled scripts into the <body> tag.
+    <!-- Script React avec tous les composants -->
+    <script type="text/babel">
+        const { useState, useEffect } = React;
 
-      To begin the development, run `npm start` or `yarn start`.
-      To create a production bundle, use `npm run build` or `yarn build`.
-    -->
-  </body>
+        // ===================================================================================
+        // DÉFINITION DE TOUS LES SOUS-COMPOSANTS
+        // ===================================================================================
+        const SubSectionTitle = ({ children, sectionId, activeSection, setActiveSection }) => (
+          <button
+            className={`sub-nav-button ${activeSection === sectionId ? 'sub-nav-button-active' : ''}`}
+            onClick={() => setActiveSection(sectionId)}
+          >
+            {children}
+          </button>
+        );
+
+        const ChallengeSection = () => (
+          <section className="content-section animate-fade-in">
+            <h2 className="section-heading challenge-heading">
+              <svg className="section-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
+              The Challenge
+            </h2>
+            <p className="section-text">
+              Out-of-stock situations are a constant challenge, but the real threat lies in <strong>strategic out of stocks</strong> – especially those affecting <strong>"fast movers"</strong>. For an equipment manufacturer with an annual revenue of <strong>€100 million</strong>, an overall 10% out-of-stock rate already represents significant risk. However, the critical impact comes from the <strong>3% of these out of stocks that concern "fast movers"</strong>. These high-demand parts are crucial for your clients (distributors, workshops), as their absence leads to <strong>direct and immediate lost revenue</strong> for the end-customer.
+            </p>
+            <ul className="bullet-list">
+              <li><strong>Direct Financial Impact on Clients:</strong> A workshop cannot perform repairs, a distributor cannot sell. This directly translates to lost earnings and severe frustration for your customers.</li>
+              <li><strong>Erosion of Trust and Brand Image:</strong> When critical parts are unavailable, client trust erodes. Customers start seeking alternatives, including from competitors, directly threatening your <strong>market share</strong> and <strong>customer lifetime value (CLV)</strong>.</li>
+              <li><strong>Compliance & Reputation Risk:</strong> Unmanaged out-of-stock situations can lead to contractual penalties with large distributors or warranty issues, highlighting a lack of <strong>compliance</strong> and damaging your reputation as a reliable supplier.</li>
+              <li><strong>Internal Resource Drain:</strong> Managing these strategic out of stocks diverts your sales and after-sales teams from value-generating tasks, leading to unproductive time and increased operational costs.</li>
+            </ul>
+          </section>
+        );
+
+        const SolutionSection = () => (
+            <section className="content-section animate-fade-in">
+                <h2 className="section-heading solution-heading">
+                    <svg className="section-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                    Our Integrated Solution
+                </h2>
+                <p className="section-text">
+                    Marketparts offers an integrated approach to transform strategic out-of-stock situations into a demonstration of your excellence. We leverage our unique assets to provide a seamless and effective solution.
+                </p>
+                <div className="hidden-cost-section" style={{ borderColor: 'var(--true-blue)', boxShadow: '0 4px 20px rgba(26, 125, 255, 0.2)', margin: '1.5rem 0' }}>
+                     <h3 className="hidden-cost-title" style={{color: 'var(--true-blue)'}}>Our Core Asset: A Unique Distributor Network</h3>
+                     <p className="section-text" style={{textAlign: 'center'}}>
+                         Our strength lies in connecting with <strong>25% of the European aftermarket</strong>. This gives us access to an extensive inventory valued at <strong>1.9 billion euros</strong> and over <strong>8.2 million live offers</strong>. This vast, interconnected ecosystem is our primary tool to find alternative sources for your backordered products, ensuring business continuity for your clients.
+                     </p>
+                </div>
+            </section>
+        );
+
+        const BenefitsSection = () => (
+            <section className="content-section animate-fade-in">
+                <h2 className="section-heading benefits-heading">
+                    <svg className="section-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+                    Your Benefits
+                </h2>
+                <p className="section-text">
+                    This partnership model offers a deeper, more integrated approach. We become a strategic extension of your brand, protecting your market share and client relationships.
+                </p>
+                <ul className="icon-list">
+                    <li>
+                        <svg className="list-icon purple-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path></svg>
+                        <div>
+                            <strong className="list-item-strong">Client Retention & Brand Integrity:</strong>
+                            We ensure your customers remain loyal to *your* brand by preventing them from turning to competitors. This proactive management provides <strong>true peace of mind</strong> for your clients and builds a reputation for absolute reliability—a <strong>decisive competitive advantage</strong>.
+                        </div>
+                    </li>
+                    <li>
+                        <svg className="list-icon purple-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2"></path></svg>
+                        <div>
+                            <strong className="list-item-strong">Resource Optimization & Strategic Focus:</strong>
+                            Free your internal teams from the reactive burden of managing stock-out crises, enabling them to focus on core business activities and strategic growth.
+                        </div>
+                    </li>
+                    <li>
+                        <svg className="list-icon purple-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
+                        <div>
+                            <strong className="list-item-strong">Market Share Protection & Lost Sale Mitigation:</strong>
+                            Our service directly counters the risk of losing market share by ensuring your customers still receive the part, preventing competitors from capturing your customer base.
+                        </div>
+                    </li>
+                    <li>
+                        <svg className="list-icon purple-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                        <div>
+                            <strong className="list-item-strong">Valuable Supply Chain Insights:</strong>
+                            Our detailed analysis of out-of-stock patterns provides invaluable data, helping you proactively identify weaknesses in your own supply chain and forecasting.
+                        </div>
+                    </li>
+                </ul>
+                <div className="hidden-cost-section" style={{borderColor: 'var(--red-color)', marginTop: '2rem'}}>
+                     <h3 className="hidden-cost-title" style={{color: 'var(--red-color)'}}>Hidden Cost Alert: Logistic Penalties</h3>
+                     <p className="section-text">
+                         Beyond the directly calculable losses, there's another significant, often unseen, financial impact: <strong>logistic penalties</strong>. Many contracts with major distributors include strict clauses for non-compliance with delivery terms.
+                     </p>
+                     <p className="section-text">
+                         Our service actively works to <strong>prevent their occurrence</strong> by facilitating alternative fulfillment for strategic out of stocks. This helps you avoid triggering these costly clauses, further safeguarding your margins.
+                     </p>
+                </div>
+            </section>
+        );
+
+        const ExpectationsSection = () => (
+            <section className="content-section animate-fade-in">
+                <h2 className="section-heading expectations-heading">
+                    <svg className="section-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 9l3 3-3 3m5 0h3M5 20h14a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                    Your Role
+                </h2>
+                <p className="section-text">
+                    To fully leverage our service and ensure seamless customer communication, your active participation is key.
+                </p>
+                <div className="card-container">
+                    <div className="info-card orange-card">
+                        <h3 className="card-title card-title-icon">
+                            <svg className="card-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
+                            Timely & Accurate Data Sharing
+                        </h3>
+                        <p className="card-text">
+                            Provide real-time access to critical information like stock levels, incoming shipments, and order statuses.
+                        </p>
+                    </div>
+                    <div className="info-card orange-card">
+                        <h3 className="card-title card-title-icon">
+                            <svg className="card-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4.354a4 4 0 110 5.292M12 20a9 9 0 110-18 9 9 0 010 18zm0 0v-8"></path></svg>
+                            Dedicated Internal Point of Contact
+                        </h3>
+                        <p className="card-text">
+                            Designate a responsive internal contact for our team to ensure quick answers and rapid decision-making.
+                        </p>
+                    </div>
+                    <div className="info-card orange-card">
+                        <h3 className="card-title card-title-icon">
+                            <svg className="card-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M7 8h10M7 12h10M7 16h10M9 20h6a2 2 0 002-2V6a2 2 0 00-2-2H9a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                            Collaborative Communication Guidelines
+                        </h3>
+                        <p className="card-text">
+                            We encourage a joint communication strategy, providing us with your brand's tone of voice and key messaging.
+                        </p>
+                    </div>
+                    <div className="info-card orange-card">
+                        <h3 className="card-title card-title-icon">
+                            <svg className="card-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                            Constructive Feedback
+                        </h3>
+                        <p className="card-text">
+                            Your feedback is invaluable. Regular reviews help us continuously refine our service to meet your needs.
+                        </p>
+                    </div>
+                </div>
+            </section>
+        );
+        
+        const HowToSection = () => (
+            <section className="content-section animate-fade-in">
+                <h2 className="section-heading solution-heading">
+                    <svg className="section-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h2M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path></svg>
+                    Concrete Workflow
+                </h2>
+                <div className="timeline-container">
+                    <div className="timeline-item">
+                        <div className="timeline-dot"></div>
+                        <div className="timeline-content">
+                            <h3 className="timeline-title">1. Monthly Declaration</h3>
+                            <p className="timeline-text">
+                                You provide us with a monthly list of products currently in backorder or forecasted to be out of stock. This defines the eligible scope for our service. You also share the list of affected clients.
+                            </p>
+                        </div>
+                    </div>
+                    <div className="timeline-item">
+                        <div className="timeline-dot"></div>
+                        <div className="timeline-content">
+                            <h3 className="timeline-title">2. Sourcing & Matching</h3>
+                            <p className="timeline-text">
+                                Marketparts activates its network search engine. Our algorithms work to find alternative sources for the declared out-of-stock products among our vast network of distributors.
+                            </p>
+                        </div>
+                    </div>
+                    <div className="timeline-item">
+                        <div className="timeline-dot"></div>
+                        <div className="timeline-content">
+                            <h3 className="timeline-title">3. Weekly Proposal</h3>
+                            <p className="timeline-text">
+                                Every week, we propose a curated list of alternative purchasing options to your clients at the current Marketparts market price. This communication is handled under your brand for a seamless experience.
+                            </p>
+                        </div>
+                    </div>
+                    <div className="timeline-item">
+                        <div className="timeline-dot"></div>
+                        <div className="timeline-content">
+                            <h3 className="timeline-title">4. Client Decision</h3>
+                            <p className="timeline-text">
+                                Your clients have the complete freedom to accept or decline the proposed alternatives, giving them control while ensuring you have provided a proactive solution.
+                            </p>
+                        </div>
+                    </div>
+                    <div className="timeline-item">
+                        <div className="timeline-dot"></div>
+                        <div className="timeline-content">
+                            <h3 className="timeline-title">5. Quarterly Reporting & Billing</h3>
+                            <p className="timeline-text">
+                                At the end of each quarter, we provide a detailed report of all successful transactions. This report serves as the transparent basis for calculating the commission due.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        );
+
+        const ComplianceSection = () => (
+            <section className="content-section animate-fade-in">
+                 <h2 className="section-heading">
+                    <svg className="section-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 20.944A12.02 12.02 0 0012 22a12.02 12.02 0 009-1.056c0-1.172-.093-2.313-.266-3.412a11.955 11.955 0 01-2.118-4.524 12.023 12.023 0 01.326-4.398z"></path></svg>
+                    Compliance
+                </h2>
+                 <p className="section-text">
+                    Trust is the foundation of our partnership. We have built a robust framework to ensure the highest level of security, confidentiality, and legal compliance in all our operations.
+                </p>
+                <ul className="icon-list">
+                    <li>
+                        <svg className="list-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H5v-2H3v-2H1v-2h2v-2h2v-2h2v-2h2l2.257-2.257A6 6 0 0115 7z"></path></svg>
+                        <div>
+                            <strong className="list-item-strong">Strict Confidentiality (NDA):</strong>
+                            All collaborations begin with a Non-Disclosure Agreement (NDA) to formally guarantee that your sensitive information is protected and used exclusively for the purposes of our partnership.
+                        </div>
+                    </li>
+                    <li>
+                        <svg className="list-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
+                        <div>
+                            <strong className="list-item-strong">Data Sealing & Security:</strong>
+                           Your data is processed in a completely sealed environment. We ensure a strict separation from the open market and your competitors. Your backorder information and client lists are never exposed or used for any other purpose.
+                        </div>
+                    </li>
+                     <li>
+                        <svg className="list-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 10h.01M15 10h.01M10 14a2 2 0 104 0 2 2 0 00-4 0z"></path></svg>
+                        <div>
+                            <strong className="list-item-strong">Network & Product Compliance:</strong>
+                            Marketparts has established a strong internal compliance program. We continuously vet our network of distributors and guarantee the legal conformity of all products and transactions facilitated through our platform.
+                        </div>
+                    </li>
+                </ul>
+            </section>
+        );
+
+        const PricingSection = () => (
+            <section className="content-section animate-fade-in">
+                <h2 className="section-heading pricing-heading">
+                    <svg className="section-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
+                    Pricing Model
+                </h2>
+
+                <div className="card-container pricing-grid-3">
+                    {/* Quarterly Subscription Card */}
+                    <div className="info-card blue-card">
+                        <h3 className="card-title">Quarterly Subscription (Base Fee)</h3>
+                        <p className="card-text">
+                            Upfront pre-payment per-quarter.
+                        </p>
+                        <ul className="pricing-list">
+                            <li>Tier 1: <strong>€10,000</strong></li>
+                            <li>OEM: <strong>€8,000</strong></li>
+                            <li>Mid-Size: <strong>€6,000</strong></li>
+                        </ul>
+                    </div>
+
+                    {/* Transaction Commission Card */}
+                    <div className="info-card green-card">
+                        <h3 className="card-title">Transaction Commission Structure</h3>
+                         <p className="card-text" style={{marginBottom: '0.5rem'}}>
+                            Volume handled per quarter (€):
+                        </p>
+                        <ul className="pricing-list">
+                            <li>€0 – €500,000: <strong>15%</strong></li>
+                            <li>€500,001 – €1,500,000: <strong>13%</strong></li>
+                            <li>€1,500,001+: <strong>11%</strong></li>
+                        </ul>
+                    </div>
+                    
+                     {/* Other Guarantees Card */}
+                    <div className="info-card orange-card">
+                        <h3 className="card-title">Guarantees & Conditions</h3>
+                         <ul className="pricing-list">
+                            <li>
+                                <strong>Minimum Discovery Guarantee:</strong>
+                                <br/>15% of request
+                            </li>
+                             <li>
+                                <strong>MOQ:</strong>
+                                <br/>€500. If less, real logistic costs are applied.
+                            </li>
+                         </ul>
+                    </div>
+                </div>
+                 <div className="hidden-cost-section" style={{borderColor: 'var(--green-color)', boxShadow: '0 4px 20px rgba(16, 185, 129, 0.2)', marginTop: '2rem'}}>
+                     <h3 className="hidden-cost-title" style={{color: 'var(--green-color)'}}>Our Guarantee of Results: Zero Risk</h3>
+                     <p className="section-text" style={{textAlign: 'center'}}>
+                        We believe in the power of our network. That's why we offer you a true results-based insurance. If we fail to find a solution for at least <strong>15% of the value of the "fast movers"</strong> you entrust to us each quarter, we are committed to <strong>not invoicing the subscription fee</strong> for the period concerned. It's simple: if our network doesn't prove its effectiveness for you, you don't pay the fixed costs. Your investment is directly linked to our performance. <strong>You can't lose.</strong>
+                     </p>
+                </div>
+            </section>
+        );
+
+        const RoiSection = () => {
+            const [turnover, setTurnover] = useState(100000000);
+            const [displayTurnover, setDisplayTurnover] = useState('100 000 000');
+
+            const numberFormatter = new Intl.NumberFormat('fr-FR', { useGrouping: true });
+            const currencyFormatter = new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR', minimumFractionDigits: 0, maximumFractionDigits: 0 });
+
+            const handleTurnoverChange = (e) => {
+                const rawValue = e.target.value.replace(/\s/g, '');
+                const numericValue = parseInt(rawValue, 10);
+                
+                if (!isNaN(numericValue)) {
+                    setTurnover(numericValue);
+                    setDisplayTurnover(numberFormatter.format(numericValue));
+                } else if (rawValue === '') {
+                    setTurnover(0);
+                    setDisplayTurnover('');
+                }
+            };
+
+            // Calculation Constants
+            const FAST_MOVER_RATE = 0.03; // 3% of turnover are critical "fast movers" at risk
+            const RECOVERY_RATE = 0.175; // We estimate recovering 17.5% of the value at risk
+            const REVENUE_LOSS_RATE = 0.50; // Client would lose 50% of the value to competitors
+            const SUBSCRIPTION_FEE = 8000;
+            const BASE_INTERNAL_COSTS = 12000;
+            const BASE_FM_VALUE_FOR_COSTS = 750000;
+
+
+            // Quarterly Calculations
+            const quarterlyTurnover = turnover / 4;
+            const fastMoverValueAtRisk = quarterlyTurnover * FAST_MOVER_RATE;
+            const revenueLostToCompetitors = fastMoverValueAtRisk * REVENUE_LOSS_RATE;
+            const internalCosts = (fastMoverValueAtRisk / BASE_FM_VALUE_FOR_COSTS) * BASE_INTERNAL_COSTS;
+            const totalPotentialLoss = revenueLostToCompetitors + internalCosts;
+            
+            const recoveredValue = fastMoverValueAtRisk * RECOVERY_RATE;
+
+            let commissionRate = 0.15;
+            if (recoveredValue > 1500000) {
+                commissionRate = 0.11;
+            } else if (recoveredValue > 500000) {
+                commissionRate = 0.13;
+            }
+            
+            const transactionCommission = recoveredValue * commissionRate;
+            const totalInvestment = SUBSCRIPTION_FEE + transactionCommission;
+
+            const netGain = recoveredValue + internalCosts - totalInvestment;
+            const roi = totalInvestment > 0 ? Math.round((netGain / totalInvestment) * 100) : 0;
+
+
+            return (
+                <section className="content-section animate-fade-in">
+                    <h2 className="section-heading benefits-heading">
+                        <svg className="section-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+                        ROI Simulator
+                    </h2>
+                    <p className="section-text">
+                       This simulation demonstrates how our partnership converts potential losses into measurable gains. Adjust your annual turnover to see the impact in real-time.
+                    </p>
+
+                    <div className="simulator-container">
+                        <label htmlFor="turnover-input" className="simulator-label">Enter Annual Turnover (€):</label>
+                        <input
+                            id="turnover-input"
+                            type="text"
+                            className="simulator-input"
+                            value={displayTurnover}
+                            onChange={handleTurnoverChange}
+                        />
+                    </div>
+
+                    <div className="roi-card">
+                        <div className="roi-item">
+                            <span className="roi-label">1. Client Risk Scenario (Quarterly)</span>
+                            <p className="roi-sub-label">Based on 3% of your quarterly turnover representing critical "fast mover" backorders.</p>
+                            <ul className="roi-list">
+                                <li>Fast Mover Value at Risk: <strong>{currencyFormatter.format(fastMoverValueAtRisk)}</strong></li>
+                                <li>Revenue Lost to Competitors (50%): <strong>-{currencyFormatter.format(revenueLostToCompetitors)}</strong></li>
+                                <li>Internal Operational Costs: <strong>-{currencyFormatter.format(internalCosts)}</strong></li>
+                                <li className="summary-line red-line">Total Quarterly Potential Loss: <strong>{currencyFormatter.format(totalPotentialLoss)}</strong></li>
+                            </ul>
+                        </div>
+                        <div className="roi-item">
+                            <span className="roi-label">2. Marketparts Investment (Quarterly)</span>
+                            <p className="roi-sub-label">Based on a 17.5% recovery rate of the "fast mover" value, with the OEM subscription.</p>
+                             <ul className="roi-list">
+                                <li>Value of Recovered Backorders: <strong>{currencyFormatter.format(recoveredValue)}</strong></li>
+                                <li>Quarterly Subscription Fee (OEM): <strong>{currencyFormatter.format(SUBSCRIPTION_FEE)}</strong></li>
+                                <li>Transaction Commission ({commissionRate * 100}%): <strong>{currencyFormatter.format(transactionCommission)}</strong></li>
+                                <li className="summary-line blue-line">Total Quarterly Investment: <strong>{currencyFormatter.format(totalInvestment)}</strong></li>
+                            </ul>
+                        </div>
+                        <div className="roi-item final-roi">
+                            <span className="roi-label">3. Net Gain & Return On Investment</span>
+                            <p className="roi-sub-label">The net financial benefit is calculated on the value directly recovered and costs avoided, thanks to our intervention.</p>
+                            <ul className="roi-list">
+                                <li>Revenue Recovered by Marketparts: <strong>+{currencyFormatter.format(recoveredValue)}</strong></li>
+                                <li>Avoided Internal Operational Costs: <strong>+{currencyFormatter.format(internalCosts)}</strong></li>
+                                <li>Cost of Marketparts Service: <strong>-{currencyFormatter.format(totalInvestment)}</strong></li>
+                                <li className="summary-line green-line">Net Quarterly Gain: <strong>{currencyFormatter.format(netGain)}</strong></li>
+                                <li className="summary-line green-line" style={{fontSize: '1.5rem', marginTop: '1rem'}}>ROI: ≈ <strong>{roi}%</strong></li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div className="hidden-cost-section">
+                         <h3 className="hidden-cost-title" style={{color: 'var(--orange-color)'}}>Flexibility and Control: Geographic Segmentation</h3>
+                         <p className="section-text">
+                             Our service offers granular control, allowing you to activate backorder optimization for specific geographic zones or countries. This enables a targeted approach, letting you test the service in a limited area or apply it only where the need is most critical, ensuring the solution perfectly aligns with your strategic priorities.
+                         </p>
+                    </div>
+                </section>
+            );
+        }
+
+        const MainCategoryNav = ({ activeCategory, setActiveCategory, onCategoryChange }) => {
+            const categories = [
+                { id: 'market', title: 'MARKET CONTEXT' },
+                { id: 'how', title: 'HOW IT WORKS' },
+                { id: 'business', title: 'BUSINESS CASE' },
+            ];
+
+            return (
+                <nav className="main-nav-bar">
+                    {categories.map(cat => (
+                         <button
+                            key={cat.id}
+                            className={`main-nav-button ${activeCategory === cat.id ? 'main-nav-button-active' : ''}`}
+                            onClick={() => onCategoryChange(cat.id)}
+                          >
+                            {cat.title}
+                          </button>
+                    ))}
+                </nav>
+            );
+        }
+
+        const SubNav = ({ sections, activeSection, setActiveSection }) => (
+            <nav className="sub-nav-bar">
+                {sections.map(section => (
+                    <SubSectionTitle
+                        key={section.id}
+                        sectionId={section.id}
+                        activeSection={activeSection}
+                        setActiveSection={setActiveSection}
+                    >
+                        {section.title}
+                    </SubSectionTitle>
+                ))}
+            </nav>
+        );
+
+        const Offer1Content = () => {
+            const [activeCategory, setActiveCategory] = useState('market');
+            const [activeSection, setActiveSection] = useState('challenge');
+
+            const sections = {
+                market: [
+                    { id: 'challenge', title: 'The Challenge', component: <ChallengeSection /> },
+                    { id: 'solution', title: 'Our Solution', component: <SolutionSection /> },
+                    { id: 'benefits', title: 'Your Benefits', component: <BenefitsSection /> },
+                ],
+                how: [
+                    { id: 'expectations', title: 'Your Role', component: <ExpectationsSection /> },
+                    { id: 'how-to', title: 'Concrete Workflow', component: <HowToSection /> },
+                    { id: 'compliance', title: 'Compliance', component: <ComplianceSection /> },
+                ],
+                business: [
+                    { id: 'pricing', title: 'Pricing Model', component: <PricingSection /> },
+                    { id: 'roi-calculation', title: 'ROI Simulator', component: <RoiSection /> },
+                ],
+            };
+            
+            const handleCategoryChange = (category) => {
+                setActiveCategory(category);
+                setActiveSection(sections[category][0].id);
+            }
+
+            const currentSections = sections[activeCategory];
+            const activeSectionObject = currentSections.find(s => s.id === activeSection);
+            const ActiveComponent = activeSectionObject ? activeSectionObject.component : null;
+
+            return (
+                <React.Fragment>
+                    <header className="hero-header">
+                        <img src="https://cdn.prod.website-files.com/67def6048190f339133d7004/67ebf7692c315afcae5693d1_logo_marketparts_blue.svg" alt="Marketparts Logo" className="hero-logo-img" />
+                        <span className="hero-tag">Continuity</span>
+                        <h1 className="hero-title">Supply Continuity Promise</h1>
+                        <p className="hero-subtitle">Boost your sales and satisfaction with our robust supply continuity management solutions.</p>
+                    </header>
+
+                    <MainCategoryNav activeCategory={activeCategory} onCategoryChange={handleCategoryChange} />
+                    <SubNav sections={currentSections} activeSection={activeSection} setActiveSection={setActiveSection} />
+
+                    <main className="main-content">
+                        {ActiveComponent}
+                    </main>
+                </React.Fragment>
+            );
+        };
+
+        const LoginScreen = ({ onLogin, error }) => {
+            const [password, setPassword] = useState('');
+
+            const handleSubmit = () => {
+                onLogin(password);
+            };
+
+            const handleKeyPress = (e) => {
+                if (e.key === 'Enter') {
+                    handleSubmit();
+                }
+            };
+
+            return (
+                <div className="login-page-wrapper">
+                     <video 
+                        className="background-video"
+                        autoPlay 
+                        loop 
+                        muted 
+                        playsInline
+                        poster="https://cdn.prod.website-files.com/67def6048190f339133d7004%2F6853c543c8f7421b5d09461c_wave_V2-poster-00001.jpg"
+                    >
+                        <source src="https://cdn.prod.website-files.com/67def6048190f339133d7004%2F6853c543c8f7421b5d09461c_wave_V2-transcode.mp4" type="video/mp4" />
+                        <source src="https://cdn.prod.website-files.com/67def6048190f339133d7004%2F6853c543c8f7421b5d09461c_wave_V2-transcode.webm" type="video/webm" />
+                    </video>
+                    <div className="video-overlay"></div>
+                    <div className="login-container">
+                        <div className="login-box">
+                            <img src="https://cdn.prod.website-files.com/67def6048190f339133d7004/67ebf7692c315afcae5693d1_logo_marketparts_blue.svg" alt="Marketparts Logo" className="logo-img" />
+                            <h2 className="login-title">Enter Partner Access Code</h2>
+                            <input
+                                type="password"
+                                className="login-input"
+                                value={password}
+                                onChange={(e) => setPassword(e.target.value)}
+                                onKeyPress={handleKeyPress}
+                                placeholder="Password"
+                            />
+                            <button className="login-button" onClick={handleSubmit}>
+                                Access
+                            </button>
+                            {error && <p className="login-error">{error}</p>}
+                        </div>
+                    </div>
+                </div>
+            );
+        };
+        
+        // ===================================================================================
+        // COMPOSANT PRINCIPAL DE L'APPLICATION
+        // ===================================================================================
+        const App = () => {
+            const [isAuthenticated, setIsAuthenticated] = useState(false);
+            const [passwordError, setPasswordError] = useState('');
+
+            const CORRECT_PASSWORD = 'Marketparts';
+
+            useEffect(() => {
+                document.title = 'Supply Continuity Promise';
+            }, []);
+
+            const handleLogin = (password) => {
+                if (password === CORRECT_PASSWORD) {
+                    setIsAuthenticated(true);
+                    setPasswordError('');
+                } else {
+                    setPasswordError('Incorrect password. Please try again.');
+                }
+            };
+            
+            if (!isAuthenticated) {
+                return <LoginScreen onLogin={handleLogin} error={passwordError} />;
+            }
+
+            return (
+                <div className="app-container">
+                    <Offer1Content />
+                </div>
+            );
+        };
+
+        const container = document.getElementById('root');
+        const root = ReactDOM.createRoot(container);
+        root.render(<App />);
+    </script>
+</body>
 </html>
