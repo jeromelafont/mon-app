@@ -5,12 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Supply Continuity Promise</title>
     
-    <!-- Importation de React, ReactDOM et Babel pour la transpilation JSX -->
     <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
     <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
     <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
 
-    <!-- Styles CSS de l'application -->
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap');
 
@@ -551,6 +549,18 @@
             margin-bottom: 2rem;
             border: 1px solid rgba(26, 125, 255, 0.3);
         }
+        .simulator-grid {
+            display: grid;
+            gap: 1.5rem;
+        }
+        @media (min-width: 768px) {
+            .simulator-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+             .simulator-grid .turnover-field {
+                grid-column: 1 / -1; /* Span full width on larger screens */
+            }
+        }
         .simulator-label {
             display: block;
             margin-bottom: 0.5rem;
@@ -558,7 +568,6 @@
         }
         .simulator-input {
             width: 100%;
-            max-width: 400px;
             padding: 0.75rem;
             border-radius: 4px;
             border: 1px solid var(--true-blue);
@@ -567,13 +576,13 @@
             font-size: 1.2rem;
             font-weight: 700;
             text-align: right;
+            box-sizing: border-box;
         }
     </style>
 </head>
 <body>
     <div id="root"></div>
 
-    <!-- Script React avec tous les composants -->
     <script type="text/babel">
         const { useState, useEffect } = React;
 
@@ -616,7 +625,7 @@
                 <p className="section-text">
                     Marketparts offers an integrated approach to transform strategic out-of-stock situations into a demonstration of your excellence. We leverage our unique assets to provide a seamless and effective solution.
                 </p>
-                 <div className="hidden-cost-section" style={{ borderColor: 'var(--true-blue)', boxShadow: '0 4px 20px rgba(26, 125, 255, 0.2)', margin: '1.5rem 0' }}>
+                <div className="hidden-cost-section" style={{ borderColor: 'var(--true-blue)', boxShadow: '0 4px 20px rgba(26, 125, 255, 0.2)', margin: '1.5rem 0' }}>
                      <h3 className="hidden-cost-title" style={{color: 'var(--true-blue)'}}>Our Core Asset: A Unique Distributor Network</h3>
                      <p className="section-text" style={{textAlign: 'center'}}>
                          Our strength lies in connecting with <strong>25% of the European aftermarket</strong>. This gives us access to an extensive inventory valued at <strong>1.9 billion euros</strong> and over <strong>8.2 million live offers</strong>. This vast, interconnected ecosystem is our primary tool to find alternative sources for your backordered products, ensuring business continuity for your clients.
@@ -909,7 +918,10 @@
         const RoiSection = () => {
             const [turnover, setTurnover] = useState(100000000);
             const [displayTurnover, setDisplayTurnover] = useState('100 000 000');
-
+            const [avgOrderValue, setAvgOrderValue] = useState(500);
+            const [clv, setClv] = useState(2500);
+            const [churnRate, setChurnRate] = useState(10);
+            
             const numberFormatter = new Intl.NumberFormat('fr-FR', { useGrouping: true });
             const currencyFormatter = new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR', minimumFractionDigits: 0, maximumFractionDigits: 0 });
 
@@ -925,90 +937,106 @@
                     setDisplayTurnover('');
                 }
             };
-
-            // Calculation Constants
-            const FAST_MOVER_RATE = 0.03; // 3% of turnover are critical "fast movers" at risk
-            const RECOVERY_RATE = 0.175; // We estimate recovering 17.5% of the value at risk
-            const REVENUE_LOSS_RATE = 0.50; // Client would lose 50% of the value to competitors
+            
+            const FAST_MOVER_RATE = 0.03;
+            const RECOVERY_RATE = 0.175;
+            const REVENUE_LOSS_RATE = 0.50;
             const SUBSCRIPTION_FEE = 8000;
             const BASE_INTERNAL_COSTS = 12000;
             const BASE_FM_VALUE_FOR_COSTS = 750000;
 
-
-            // Quarterly Calculations
             const quarterlyTurnover = turnover / 4;
             const fastMoverValueAtRisk = quarterlyTurnover * FAST_MOVER_RATE;
-            const revenueLostToCompetitors = fastMoverValueAtRisk * REVENUE_LOSS_RATE;
-            const internalCosts = (fastMoverValueAtRisk / BASE_FM_VALUE_FOR_COSTS) * BASE_INTERNAL_COSTS;
-            const totalPotentialLoss = revenueLostToCompetitors + internalCosts;
             
+            const internalCosts = (fastMoverValueAtRisk / BASE_FM_VALUE_FOR_COSTS) * BASE_INTERNAL_COSTS;
+            const revenueLostToCompetitors = fastMoverValueAtRisk * REVENUE_LOSS_RATE;
+
             const recoveredValue = fastMoverValueAtRisk * RECOVERY_RATE;
+            const unrecoveredValue = fastMoverValueAtRisk - recoveredValue;
 
             let commissionRate = 0.15;
-            if (recoveredValue > 1500000) {
-                commissionRate = 0.11;
-            } else if (recoveredValue > 500000) {
-                commissionRate = 0.13;
-            }
+            if (recoveredValue > 1500000) commissionRate = 0.11;
+            else if (recoveredValue > 500000) commissionRate = 0.13;
             
             const transactionCommission = recoveredValue * commissionRate;
             const totalInvestment = SUBSCRIPTION_FEE + transactionCommission;
+            
+            const lostOrders = avgOrderValue > 0 ? unrecoveredValue / avgOrderValue : 0;
+            const customersLost = lostOrders * (churnRate / 100);
+            const lostClv = customersLost * clv;
+            
+            const totalPotentialLoss = revenueLostToCompetitors + internalCosts + lostClv;
+
+            const savedClv = (recoveredValue / avgOrderValue) * (churnRate / 100) * clv;
 
             const netGain = recoveredValue + internalCosts - totalInvestment;
-            const roi = totalInvestment > 0 ? Math.round((netGain / totalInvestment) * 100) : 0;
-
+            const strategicNetGain = netGain + savedClv;
+            const strategicRoi = totalInvestment > 0 ? Math.round((strategicNetGain / totalInvestment) * 100) : 0;
 
             return (
                 <section className="content-section animate-fade-in">
                     <h2 className="section-heading benefits-heading">
                         <svg className="section-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
-                        ROI Simulator
+                        Advanced ROI Simulator
                     </h2>
                     <p className="section-text">
-                       This simulation demonstrates how our partnership converts potential losses into measurable gains. Adjust your annual turnover to see the impact in real-time.
+                       This simulation demonstrates how our partnership converts potential losses into measurable gains. Adjust the hypotheses to see the full strategic and financial impact.
                     </p>
 
                     <div className="simulator-container">
-                        <label htmlFor="turnover-input" className="simulator-label">Enter Annual Turnover (€):</label>
-                        <input
-                            id="turnover-input"
-                            type="text"
-                            className="simulator-input"
-                            value={displayTurnover}
-                            onChange={handleTurnoverChange}
-                        />
+                        <h3 className="sub-heading" style={{marginTop: 0}}>Strategic Assumptions</h3>
+                        <div className="simulator-grid">
+                            <div className="turnover-field">
+                                <label htmlFor="turnover-input" className="simulator-label">Annual Turnover (€):</label>
+                                <input id="turnover-input" type="text" className="simulator-input" value={displayTurnover} onChange={handleTurnoverChange} />
+                            </div>
+                            <div>
+                                <label htmlFor="aov-input" className="simulator-label">Average Order Value (€):</label>
+                                <input id="aov-input" type="number" className="simulator-input" value={avgOrderValue} onChange={(e) => setAvgOrderValue(Number(e.target.value))} />
+                            </div>
+                            <div>
+                                <label htmlFor="clv-input" className="simulator-label">Customer Lifetime Value (€):</label>
+                                <input id="clv-input" type="number" className="simulator-input" value={clv} onChange={(e) => setClv(Number(e.target.value))} />
+                            </div>
+                             <div>
+                                <label htmlFor="churn-input" className="simulator-label">Churn Rate from OOS (%):</label>
+                                <input id="churn-input" type="number" className="simulator-input" value={churnRate} onChange={(e) => setChurnRate(Number(e.target.value))} />
+                            </div>
+                        </div>
                     </div>
 
                     <div className="roi-card">
                         <div className="roi-item">
                             <span className="roi-label">1. Client Risk Scenario (Quarterly)</span>
-                            <p className="roi-sub-label">Based on 3% of your quarterly turnover representing critical "fast mover" backorders.</p>
+                            <p className="roi-sub-label">This is the potential quarterly loss based on your assumptions if no action is taken.</p>
                             <ul className="roi-list">
                                 <li>Fast Mover Value at Risk: <strong>{currencyFormatter.format(fastMoverValueAtRisk)}</strong></li>
-                                <li>Revenue Lost to Competitors (50%): <strong>-{currencyFormatter.format(revenueLostToCompetitors)}</strong></li>
+                                <li>Lost Revenue to Competitors (50%): <strong>-{currencyFormatter.format(revenueLostToCompetitors)}</strong></li>
+                                <li>Value of Lost Customers (CLV): <strong>-{currencyFormatter.format(lostClv)}</strong></li>
                                 <li>Internal Operational Costs: <strong>-{currencyFormatter.format(internalCosts)}</strong></li>
-                                <li className="summary-line red-line">Total Quarterly Potential Loss: <strong>{currencyFormatter.format(totalPotentialLoss)}</strong></li>
+                                <li className="summary-line red-line">Total Quarterly Potential Loss: <strong>-{currencyFormatter.format(totalPotentialLoss)}</strong></li>
                             </ul>
                         </div>
                         <div className="roi-item">
                             <span className="roi-label">2. Marketparts Investment (Quarterly)</span>
-                            <p className="roi-sub-label">Based on a 17.5% recovery rate of the "fast mover" value, with the OEM subscription.</p>
+                            <p className="roi-sub-label">This is your total investment in our solution for the quarter.</p>
                              <ul className="roi-list">
-                                <li>Value of Recovered Backorders: <strong>{currencyFormatter.format(recoveredValue)}</strong></li>
+                                <li>Value of Recovered Backorders (17.5%): <strong>{currencyFormatter.format(recoveredValue)}</strong></li>
                                 <li>Quarterly Subscription Fee (OEM): <strong>{currencyFormatter.format(SUBSCRIPTION_FEE)}</strong></li>
                                 <li>Transaction Commission ({commissionRate * 100}%): <strong>{currencyFormatter.format(transactionCommission)}</strong></li>
                                 <li className="summary-line blue-line">Total Quarterly Investment: <strong>{currencyFormatter.format(totalInvestment)}</strong></li>
                             </ul>
                         </div>
                         <div className="roi-item final-roi">
-                            <span className="roi-label">3. Net Gain & Return On Investment</span>
-                            <p className="roi-sub-label">The net financial benefit is calculated on the value directly recovered and costs avoided, thanks to our intervention.</p>
+                            <span className="roi-label">3. Net Gain & Return On Investment (Quarterly)</span>
+                            <p className="roi-sub-label">This shows the total value created by our partnership, far beyond simple cost.</p>
                             <ul className="roi-list">
-                                <li>Revenue Recovered by Marketparts: <strong>+{currencyFormatter.format(recoveredValue)}</strong></li>
-                                <li>Avoided Internal Operational Costs: <strong>+{currencyFormatter.format(internalCosts)}</strong></li>
-                                <li>Cost of Marketparts Service: <strong>-{currencyFormatter.format(totalInvestment)}</strong></li>
-                                <li className="summary-line green-line">Net Quarterly Gain: <strong>{currencyFormatter.format(netGain)}</strong></li>
-                                <li className="summary-line green-line" style={{fontSize: '1.5rem', marginTop: '1rem'}}>ROI: ≈ <strong>{roi}%</strong></li>
+                                <li>(+) Revenue Recovered: <strong>{currencyFormatter.format(recoveredValue)}</strong></li>
+                                <li>(+) Value from Churn Prevention: <strong>{currencyFormatter.format(savedClv)}</strong></li>
+                                <li>(+) Avoided Internal Costs: <strong>{currencyFormatter.format(internalCosts)}</strong></li>
+                                <li>(-) Cost of Marketparts Service: <strong>-{currencyFormatter.format(totalInvestment)}</strong></li>
+                                <li className="summary-line green-line">Total Strategic Net Gain: <strong>{currencyFormatter.format(strategicNetGain)}</strong></li>
+                                <li className="summary-line green-line" style={{fontSize: '1.5rem', marginTop: '1rem'}}>Strategic ROI: ≈ <strong>{strategicRoi}%</strong></li>
                             </ul>
                         </div>
                     </div>
@@ -1018,6 +1046,13 @@
                          <p className="section-text">
                              Our service offers granular control, allowing you to activate backorder optimization for specific geographic zones or countries. This enables a targeted approach, letting you test the service in a limited area or apply it only where the need is most critical, ensuring the solution perfectly aligns with your strategic priorities.
                          </p>
+                    </div>
+                    
+                    <div className="hidden-cost-section" style={{borderColor: 'var(--indigo-purple)', boxShadow: '0 4px 20px rgba(75, 0, 130, 0.2)'}}>
+                        <h3 className="hidden-cost-title" style={{color: 'var(--indigo-purple)'}}>Your Unbeatable Competitive Advantage</h3>
+                        <p className="section-text">
+                            In today's market, reliability is the ultimate currency. While your competitors struggle with out-of-stock situations, apologize for delays, and lose customers, you offer <strong>absolute dependability</strong>. Our service transforms a critical weakness into your greatest strength, creating a powerful competitive barrier.
+                        </p>
                     </div>
                 </section>
             );
